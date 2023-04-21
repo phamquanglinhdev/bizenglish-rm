@@ -7,7 +7,7 @@
 <div>
     @if($video)
         <a href="{{$video->url}}">
-            <i class='bx bxl-youtube text-danger'></i>
+            <i class='bx bxl-youtube text-danger'></i> Xem
         </a>
     @endif
 </div>

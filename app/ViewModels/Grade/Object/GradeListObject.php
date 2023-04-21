@@ -2,6 +2,7 @@
 
 namespace App\ViewModels\Grade\Object;
 
+use App\Untils\DataBroTable;
 use Illuminate\Support\Collection;
 
 class GradeListObject
@@ -154,6 +155,7 @@ class GradeListObject
             'attachment' => $this->getAttachment(),
             'status' => $this->getStatus(),
             'created_at' => $this->getCreatedAt(),
+            'action' => DataBroTable::cView("actions", ['entry' => 'grades', 'id' => $this->getId()])
         ])->toArray();
     }
 

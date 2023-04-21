@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+@php
+    $user  = \Illuminate\Support\Facades\Auth::user();
+@endphp
+    <!DOCTYPE html>
 
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed " dir="ltr" data-theme="theme-bordered"
       data-assets-path="" data-template="vertical-menu-template-bordered">
@@ -72,47 +75,24 @@
                             <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                    data-bs-toggle="dropdown">
-                                    <i class='fi fi-us fis rounded-circle fs-3 me-1'></i>
+                                    <i class='fi fi-vn fis rounded-circle fs-3 me-1'></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="en">
-                                            <i class="fi fi-us fis rounded-circle fs-4 me-1"></i>
-                                            <span class="align-middle">English</span>
+                                        <a class="dropdown-item" href="javascript:void(0);" data-language="vi">
+                                            <i class="fi fi-vn fis rounded-circle fs-4 me-1"></i>
+                                            <span class="align-middle">Tiếng Việt</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="javascript:void(0);" data-language="fr">
-                                            <i class="fi fi-fr fis rounded-circle fs-4 me-1"></i>
-                                            <span class="align-middle">French</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="de">
-                                            <i class="fi fi-de fis rounded-circle fs-4 me-1"></i>
-                                            <span class="align-middle">German</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="pt">
-                                            <i class="fi fi-pt fis rounded-circle fs-4 me-1"></i>
-                                            <span class="align-middle">Portuguese</span>
+                                            <i class="fi fi-us fis rounded-circle fs-4 me-1"></i>
+                                            <span class="align-middle">English</span>
                                         </a>
                                     </li>
                                 </ul>
                             </li>
-                            <!--/ Language -->
 
-
-                            <!-- Style Switcher -->
-                            {{--                            <li class="nav-item me-2 me-xl-0">--}}
-                            {{--                                <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">--}}
-                            {{--                                    <i class='bx bx-sm'></i>--}}
-                            {{--                                </a>--}}
-                            {{--                            </li>--}}
-                            <!--/ Style Switcher -->
-
-                            <!-- Quick links  -->
                             <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -445,22 +425,26 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                    data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="{{asset("img/avatars/1.png")}}" alt class="rounded-circle">
+                                        <img
+                                            src="{{$user->avatar??"https://yt3.googleusercontent.com/ytc/AGIKgqPrh1zFIIqqtXcxPZ9wNO7_iCoctkHBB_s4b-zw_w=s900-c-k-c0x00ffffff-no-rj"}}"
+                                            alt class="rounded-circle">
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                                        <a class="dropdown-item" href="#">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
-                                                        <img src="{{asset("img/avatars/1.png")}}" alt
-                                                             class="rounded-circle">
+                                                        <img
+                                                            src="{{$user->avatar??"https://yt3.googleusercontent.com/ytc/AGIKgqPrh1zFIIqqtXcxPZ9wNO7_iCoctkHBB_s4b-zw_w=s900-c-k-c0x00ffffff-no-rj"}}"
+                                                            alt
+                                                            class="rounded-circle">
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block lh-1">John Doe</span>
-                                                    <small>Admin</small>
+                                                    <span class="fw-semibold d-block lh-1"></span>
+                                                    <small>{{$user->name}}</small>
                                                 </div>
                                             </div>
                                         </a>
@@ -469,54 +453,24 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="pages-profile-user.html">
+                                        <a class="dropdown-item" href="#">
                                             <i class="bx bx-user me-2"></i>
-                                            <span class="align-middle">My Profile</span>
+                                            <span class="align-middle">Thông tin cá nhân</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                                        <a class="dropdown-item" href="#">
                                             <i class="bx bx-cog me-2"></i>
-                                            <span class="align-middle">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-account-settings-billing.html">
-                  <span class="d-flex align-items-center align-middle">
-                    <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                    <span class="flex-grow-1 align-middle">Billing</span>
-                    <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                  </span>
+                                            <span class="align-middle">Cài đặt</span>
                                         </a>
                                     </li>
                                     <li>
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="pages-help-center-landing.html">
-                                            <i class="bx bx-support me-2"></i>
-                                            <span class="align-middle">Help</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-faq.html">
-                                            <i class="bx bx-help-circle me-2"></i>
-                                            <span class="align-middle">FAQ</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-pricing.html">
-                                            <i class="bx bx-dollar me-2"></i>
-                                            <span class="align-middle">Pricing</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="auth-login-cover.html" target="_blank">
+                                        <a class="dropdown-item" href="{{route("logout")}}">
                                             <i class="bx bx-power-off me-2"></i>
-                                            <span class="align-middle">Log Out</span>
+                                            <span class="align-middle">Đăng xuất</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -550,30 +504,6 @@
 
                 <!-- Footer -->
                 <footer class="content-footer footer bg-footer-theme">
-                    <div class="container-fluid d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                        <div class="mb-2 mb-md-0">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>
-                            , made with ❤️ by PHAMQUANGLINH
-                        </div>
-                        <div>
-
-                            <a href="https://themeforest.net/licenses/standard" class="footer-link me-4"
-                               target="_blank">License</a>
-                            <a href="https://1.envato.market/pixinvent_portfolio" target="_blank"
-                               class="footer-link me-4">More Themes</a>
-
-                            <a href="https://demos.pixinvent.com/frest-html-admin-template/documentation/"
-                               target="_blank" class="footer-link me-4">Documentation</a>
-
-
-                            <a href="https://pixinvent.ticksy.com/" target="_blank"
-                               class="footer-link d-none d-sm-inline-block">Support</a>
-
-                        </div>
-                    </div>
                 </footer>
                 <!-- / Footer -->
                 <div class="content-backdrop fade"></div>
@@ -617,7 +547,7 @@
 @if(session("success"))
     <script>
         $(document).ready(
-            function (){
+            function () {
                 $(document).ajaxComplete(function () {
                     Swal.fire({
                         icon: "success",

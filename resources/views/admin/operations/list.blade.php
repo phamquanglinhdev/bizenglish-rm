@@ -54,17 +54,19 @@
 @endpush
 @section("content")
     <!-- Ajax Sourced Server-side -->
-    <div class="card">
-        <div class="card-header"><b>{{$label}}</b>
+    <div class="card border-0">
+        <div class="h2 p-2"><b>{{$label}}</b>
         </div>
         <div class="mx-2">
-            <a class="btn btn-primary text-uppercase" href="{{$currentRoute."/create"}}">Thêm mới :: {{$label}}
+            <a class="btn btn-primary text-uppercase" href="{{$currentRoute."/create"}}">
+                <i class='bx bxs-plus-circle'></i>
             </a>
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filter"
-                    aria-controls="filter">Lọc
+                    aria-controls="filter"><i class='bx bx-filter'></i>
             </button>
+            <a class="btn btn-primary" href="{{$currentRoute}}"><i class='bx bx-reset'></i>
+            </a>
         </div>
-        <hr>
         <div class="card-datatable text-nowrap">
             <table class="datatables-ajax table table-bordered">
                 <thead>
@@ -109,7 +111,7 @@
             $(".datatables-ajax").DataTable({
                 ajax: {
                     url: '{{$currentRoute}}',
-                    // data: data,
+                    data: data,
                 },
                 processing: true,
                 serverSide: true,

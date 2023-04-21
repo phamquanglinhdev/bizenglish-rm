@@ -10,7 +10,7 @@
         }
 @endphp
     <!-- Form Repeater -->
-<div class="col-12">
+<div class="col-12 mt-3">
     <div class="card">
         <h5 class="card-header">{{$field["label"]}}</h5>
         <div class="card-body">
@@ -44,24 +44,28 @@
                                 @foreach($field['sub_fields'] as $sub_field)
                                     @include("admin.operations.fields.".$sub_field['type'],['field'=>$sub_field])
                                 @endforeach
-                                <div class="col-md-2">
-                                    <label class="form-label mt-1 mb-2">Xóa hàng</label>
-                                    <div>
-                                        <button type="button" class="btn btn-label-danger" data-repeater-delete>
-                                            <i class="bx bx-trash me-1"></i>
-                                        </button>
+                                @if(!$field['single'])
+                                    <div class="col-md-2">
+                                        <label class="form-label mt-1 mb-2">Xóa hàng</label>
+                                        <div>
+                                            <button type="button" class="btn btn-label-danger" data-repeater-delete>
+                                                <i class="bx bx-trash me-1"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
                     @endif
                 </div>
-                <div class="mb-0 mt-3">
-                    <button class="btn btn-primary" type="button" data-repeater-create>
-                        <i class="bx bx-plus me-1"></i>
-                        <span class="align-middle">{{$field['new_label']??"Thêm một hàng"}}</span>
-                    </button>
-                </div>
+                @if(!$field['single'])
+                    <div class="mb-0 mt-3">
+                        <button class="btn btn-primary" type="button" data-repeater-create>
+                            <i class="bx bx-plus me-1"></i>
+                            <span class="align-middle">{{$field['new_label']??"Thêm một hàng"}}</span>
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

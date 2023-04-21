@@ -15,7 +15,8 @@
             <div class="row">
                 <div class="col-md-9">
                     <div class="rounded shadow-lg p-3">
-                        <form action="{{route($entry->getEntity().".store")}}" method="post">
+                        <form action="{{route($entry->getEntity().".store")}}" method="post"
+                              enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 @foreach($entry->getFields() as $field)

@@ -32,7 +32,28 @@ class LogListObject
 
     public function toArray(): array
     {
-        return $this->getArr();
+        return [
+            'id' => $this->getId(),
+            'grade' => $this->getGrade(),
+            'date' => $this->getDate(),
+            'start' => $this->getStart(),
+            'end' => $this->getEnd(),
+            'teacher' => $this->getTeacher(),
+            'students' => $this->getStudents(),
+            'clients' => $this->getClients(),
+            'lesson' => $this->getLesson(),
+            'partner' => $this->getPartner(),
+            'teacher_video' => (string)view("admin.operations.columns.video", ['video' => $this->getTeacherVideo()]),
+            'drive' => (string)view("admin.operations.columns.drive", ['link' => $this->getDrive()]),
+            'duration' => $this->getDuration(),
+            'hour_salary' => number_format($this->getHourSalary()),
+            'log_salary' => number_format($this->getLogSalary()),
+            'status' => $this->getStatus(),
+            'assessments' => $this->getAssessments(),
+            'attachments' => $this->getAttachments(),
+            'confirm' => $this->getConfirm(),
+            'action' => (string)view("admin.operations.columns.actions", ['entry' => 'logs', 'id' => $this->getId()])
+        ];
     }
 
     /**
@@ -179,33 +200,6 @@ class LogListObject
         return $this->confirm;
     }
 
-    /**
-     * @return array
-     */
-    public function getArr(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'grade' => $this->getGrade(),
-            'date' => $this->getDate(),
-            'start' => $this->getStart(),
-            'end' => $this->getEnd(),
-            'teacher' => $this->getTeacher(),
-            'students' => $this->getStudents(),
-            'clients' => $this->getClients(),
-            'lesson' => $this->getLesson(),
-            'partner' => $this->getPartner(),
-            'teacher_video' => $this->getTeacherVideo(),
-            'drive' => $this->getDrive(),
-            'duration' => $this->getDuration(),
-            'hour_salary' => $this->getHourSalary(),
-            'log_salary' => $this->getLogSalary(),
-            'status' => $this->getStatus(),
-            'assessments' => $this->getAssessments(),
-            'attachments' => $this->getAttachments(),
-            'confirm' => $this->getConfirm()
-        ];
-    }
 
     private function getGrade(): string
     {

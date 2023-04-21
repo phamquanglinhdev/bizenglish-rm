@@ -11,6 +11,7 @@ use App\Repositories\StaffRepository;
 use App\Repositories\StudentRepository;
 use App\Repositories\SupporterRepository;
 use App\Repositories\TeacherRepository;
+use App\Untils\DataBroTable;
 use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Grade\GradeListViewModel;
 use App\ViewModels\Grade\Object\GradeListObject;
@@ -271,7 +272,7 @@ class GradeService implements CrudServicesInterface
     public function list($attributes): JsonResponse
     {
         $gradesCollections = $this->gradeRepository->index($attributes);
-
+        $count = $this->gradeRepository->count($attributes);
         $gradesViewModel = new GradeListViewModel(
             grades: $gradesCollections->map(
                 fn(Grade $grade) => (new GradeListObject(
@@ -292,21 +293,22 @@ class GradeService implements CrudServicesInterface
                 ))->toArray()
             )->toArray(), label: "Lớp học");
 //        dd($gradesViewModel->getGrades());
-        return DataTables::collection($gradesViewModel->getGrades())
-            ->addColumn("action", function ($grade) {
-                return view("admin.operations.columns.actions", ['entry' => 'grades', 'id' => $grade['id']]);
-            })
-            ->addColumn("name", function ($grade) {
-                return view("admin.operations.columns.name", ['entry' => 'grades', 'collection' => $grade]);
-            })
-            ->addColumn("link", function ($grade) {
-                return view("admin.operations.columns.link", ['link' => $grade["link"]]);
-            })
-            ->addColumn("attachment", function ($grade) {
-                return view("admin.operations.columns.link", ['link' => $grade["attachment"]]);
-            })
-            ->rawColumns(["action", "name", "link"])
-            ->toJson();
+//        return DataTables::collection($gradesViewModel->getGrades())
+//            ->addColumn("action", function ($grade) {
+//                return view("admin.operations.columns.actions", ['entry' => 'grades', 'id' => $grade['id']]);
+//            })
+//            ->addColumn("name", function ($grade) {
+//                return view("admin.operations.columns.name", ['entry' => 'grades', 'collection' => $grade]);
+//            })
+//            ->addColumn("link", function ($grade) {
+//                return view("admin.operations.columns.link", ['link' => $grade["link"]]);
+//            })
+//            ->addColumn("attachment", function ($grade) {
+//                return view("admin.operations.columns.link", ['link' => $grade["attachment"]]);
+//            })
+//            ->rawColumns(["action", "name", "link"])
+//            ->toJson();
+        return DataBroTable::collect($gradesViewModel->getGrades(), $count, $attributes);
     }
 
     public function store($attributes): RedirectResponse

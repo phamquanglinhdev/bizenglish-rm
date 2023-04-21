@@ -22,12 +22,26 @@ class CrudRepository
         return $this->model->query();
     }
 
+    public function filter(Builder $query, array $attributes): Builder
+    {
+        return $query;
+    }
+
     public function index($attributes): Collection|array
     {
+
+        $crud = $this->filter($this->getQuery(), $attributes);
+        $crud = $this->filter($crud, $attributes);
+        if (isset($attributes['start'])) {
+            $crud->skip($attributes['start']);
+        }
+        if (isset($attributes['length'])) {
+            $crud->take($attributes['length']);
+        }
         try {
-            return $this->getQuery()->where("disable", 0)->orderBy("created_at", "DESC")->get();
+            return $crud->where("disable", 0)->orderBy("created_at", "DESC")->get();
         } catch (Exception $exception) {
-            return $this->getQuery()->orderBy("created_at", "DESC")->get();
+            return $crud->orderBy("created_at", "DESC")->get();
         }
 
     }
@@ -65,6 +79,16 @@ class CrudRepository
     public function syncRelation(Model|Builder $collection, $relationName, array $relationValue)
     {
         return $collection->{$relationName}()->sync($relationValue);
+    }
+
+    public function count($attributes): int
+    {
+        $crud = $this->filter($this->getQuery(), $attributes);
+        try {
+            return $crud->where("disable", 0)->count();
+        } catch (\Exception $exception) {
+            return $crud->count();
+        }
     }
 
 }

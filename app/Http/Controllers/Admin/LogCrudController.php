@@ -26,6 +26,7 @@ class LogCrudController extends Controller
     public function index(Request $request): View|JsonResponse
     {
         if ($request->ajax()) {
+//            dd($this->logService->list($request->input()));
             return $this->logService->list($request->input());
         }
         return view("admin.operations.list", [
@@ -38,9 +39,11 @@ class LogCrudController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view("admin.operations.create", [
+            'entry' => $this->logService->setupCreateOperation()
+        ]);
     }
 
     /**
