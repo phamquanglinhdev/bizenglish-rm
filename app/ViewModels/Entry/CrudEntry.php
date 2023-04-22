@@ -22,6 +22,11 @@ class CrudEntry
         $this->fields[] = $filed;
     }
 
+    public function removeField($name): void
+    {
+        unset($this->fields[$name]);
+    }
+
     /**
      * @return array
      */
@@ -51,7 +56,7 @@ class CrudEntry
      */
     public function getCurrentId(): ?string
     {
-        return $this->currentId??null;
+        return $this->currentId ?? null;
     }
 
 

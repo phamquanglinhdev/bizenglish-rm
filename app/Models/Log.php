@@ -46,7 +46,11 @@ class Log extends Model
     public function StatusShow()
     {
         if ($this->status != null) {
-            $status = $this->status[0];
+            if (!is_array($this->status)) {
+                $status = (array)json_decode($this->status)[0];
+            } else {
+                $status = $this->status[0];
+            }
             if ($status["name"] == "") {
                 $status["name"] = 9;
             }

@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-md-9">
                     <div class="rounded shadow-lg p-3">
-                        <form action="{{route($entry->getEntity().".update",$entry->getCurrentId())}}" method="post">
+                        <form action="{{route($entry->getEntity().".update",$entry->getCurrentId())}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method("PUT")
                             <div class="row">

@@ -2,6 +2,7 @@
 
 namespace App\ViewModels\Log\Object;
 
+use App\Untils\DataBroTable;
 use Illuminate\Support\Collection;
 
 class LogListObject
@@ -23,7 +24,7 @@ class LogListObject
         private readonly int     $hour_salary,
         private readonly int     $log_salary,
         private readonly string  $status,
-        private readonly ?string $assessments,
+        private readonly ?string $assessment,
         private readonly ?array  $attachments,
         private readonly string  $confirm,
     )
@@ -41,7 +42,7 @@ class LogListObject
             'teacher' => $this->getTeacher(),
             'students' => $this->getStudents(),
             'clients' => $this->getClients(),
-            'lesson' => $this->getLesson(),
+            'lesson' => DataBroTable::cView("text", ['text' => $this->getLesson(), "limit" => 40]),
             'partner' => $this->getPartner(),
             'teacher_video' => (string)view("admin.operations.columns.video", ['video' => $this->getTeacherVideo()]),
             'drive' => (string)view("admin.operations.columns.drive", ['link' => $this->getDrive()]),
@@ -49,8 +50,8 @@ class LogListObject
             'hour_salary' => number_format($this->getHourSalary()),
             'log_salary' => number_format($this->getLogSalary()),
             'status' => $this->getStatus(),
-            'assessments' => $this->getAssessments(),
-            'attachments' => $this->getAttachments(),
+            'assessment' => DataBroTable::cView("text", ['text' => $this->getAssessment()]),
+            'attachments' => "-",
             'confirm' => $this->getConfirm(),
             'action' => (string)view("admin.operations.columns.actions", ['entry' => 'logs', 'id' => $this->getId()])
         ];
@@ -179,9 +180,9 @@ class LogListObject
     /**
      * @return string|null
      */
-    public function getAssessments(): ?string
+    public function getAssessment(): ?string
     {
-        return $this->assessments;
+        return $this->assessment;
     }
 
     /**

@@ -27,14 +27,16 @@
                                         @endphp
                                         @include("admin.operations.fields.".$sub_field['type'],['field'=>$sub_field])
                                     @endforeach
-                                    <div class="col-md-2">
-                                        <label class="form-label mt-1 mb-2">Xóa hàng</label>
-                                        <div>
-                                            <button type="button" class="btn btn-label-danger" data-repeater-delete>
-                                                <i class="bx bx-trash me-1"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    @if(!$field['single'])
+                                            <div class="col-md-2">
+                                                <label class="form-label mt-1 mb-2">Xóa hàng</label>
+                                                <div>
+                                                    <button type="button" class="btn btn-label-danger" data-repeater-delete>
+                                                        <i class="bx bx-trash me-1"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

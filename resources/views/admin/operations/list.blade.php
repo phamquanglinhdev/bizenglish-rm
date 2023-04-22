@@ -3,6 +3,7 @@
  * @var $label
  * @var $columns
  * @var $filters
+ * @var $leftFix
  **/
     use \Illuminate\Support\Facades\Route;
     use Illuminate\Support\Facades\Request;
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="{{asset("vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css")}}">
     <link rel="stylesheet" href="{{asset("vendor/libs/flatpickr/flatpickr.css")}}"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.2.2/css/fixedColumns.dataTables.min.css"/>
+    <link rel="stylesheet" href="{{asset("vendor/libs/typeahead-js/typeahead.css")}}"/>
     <style>
         .dataTables_wrapper .dataTables_processing {
             background: none;
@@ -74,7 +76,7 @@
                     @foreach($columns as $key => $labelName)
                         <td class="bg-primary text-white">{{$labelName}}</td>
                     @endforeach
-                                        <td class="bg-primary text-white">Hành động</td>
+                    <td class="bg-primary text-white">Hành động</td>
                 </tr>
                 </thead>
                 <tfoot>
@@ -82,7 +84,7 @@
                     @foreach($columns as $key => $labelName)
                         <td class="bg-primary text-white">{{$labelName}}</td>
                     @endforeach
-                                        <td class="bg-primary text-white">Hành động</td>
+                    <td class="bg-primary text-white">Hành động</td>
                 </tr>
                 </tfoot>
             </table>
@@ -120,13 +122,21 @@
                 scrollX: true,
                 fixedHeader: true,
                 fixedColumns: {
-                    left: 1,
+                    left: {{$leftFix??1}},
                     right: 0
                 },
                 searching: false,
                 sorting: false,
                 scrollCollapse: true,
             })
+
+            $(document).ajaxComplete(function () {
+                "use strict";
+                [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (e) {
+                    return new bootstrap.Popover(e, {html: !0, sanitize: !1})
+                });
+            });
         })
     </script>
+
 @endpush

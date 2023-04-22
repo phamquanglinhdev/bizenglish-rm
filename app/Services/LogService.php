@@ -9,11 +9,18 @@ use App\Repositories\LogRepository;
 use App\Repositories\StudentRepository;
 use App\Repositories\TeacherRepository;
 use App\Untils\DataBroTable;
+use App\Untils\EzUpload;
 use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Log\LogListViewModel;
 use App\ViewModels\Log\Object\LogListObject;
+use App\ViewModels\Log\Object\LogStoreObject;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\FileBag;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogService implements \App\Contract\CrudServicesInterface
@@ -48,7 +55,7 @@ class LogService implements \App\Contract\CrudServicesInterface
             'hour_salary' => 'Lương theo giờ',
             'log_salary' => 'Lương buổi học',
             'status' => 'Tình trạng lớp học',
-            'assessments' => 'Nhận xét của giáo viên',
+            'assessment' => 'Nhận xét của giáo viên',
             'attachments' => 'Đính kèm',
             'confirm' => 'HS Xác nhận',
         ];
@@ -62,7 +69,7 @@ class LogService implements \App\Contract\CrudServicesInterface
     }
 
     public
-    function setupCreateOperation(): CrudEntry
+    function setupCreateOperation($old = null): CrudEntry
     {
         $entry = new CrudEntry("logs", $old->id ?? null, "Nhật ký");
         $entry->addField([
@@ -94,7 +101,7 @@ class LogService implements \App\Contract\CrudServicesInterface
             'type' => 'time',
         ]);
         $entry->addField([
-            'name' => 'date',
+            'name' => 'end',
             'label' => 'Kết thúc',
             'class' => 'col-md-4',
             'value' => $old["end"] ?? null,
@@ -108,10 +115,10 @@ class LogService implements \App\Contract\CrudServicesInterface
             'type' => 'numbers',
         ]);
         $entry->addField([
-            'name' => 'hour_salarary',
+            'name' => 'hour_salary',
             'label' => 'Lương / Giờ',
             'class' => 'col-md-6',
-            'value' => $old["end"] ?? null,
+            'value' => $old["hour_salary"] ?? null,
             'type' => 'numbers',
         ]);
         $entry->addField([
@@ -206,7 +213,11 @@ class LogService implements \App\Contract\CrudServicesInterface
     public
     function setupEditOperation($id)
     {
-        // TODO: Implement setupEditOperation() method.
+        $old = $this->logRepository->show($id);
+        if (!isset($old->id)) {
+            return abort("404");
+        }
+        return $this->setupCreateOperation($old);
     }
 
     /**
@@ -246,11 +257,117 @@ class LogService implements \App\Contract\CrudServicesInterface
                     hour_salary: $log['hour_salary'],
                     log_salary: $log['log_salary'],
                     status: Str::limit($log->StatusShow(), 40),
-                    assessments: $log['assessments'],
-                    attachments: [],
+                    assessment: $log['assessment'],
+                    attachments: json_decode($log['attachments']),
                     confirm: "-"
                 ))->toArray()
             )->toArray(), label: "Nhật ký lớp học");
         return DataBroTable::collect($logListViewModel->getLogs(), $count, $attributes);
+    }
+
+    public function validate($attributes): \Illuminate\Validation\Validator
+    {
+        return Validator::make($attributes,
+            [
+                'date' => 'required',
+                'start' => 'required',
+                'end' => 'required',
+                'duration' => 'numeric|required|min:0',
+                'hour_salary' => 'numeric|required|min:0',
+                'lesson' => 'required',
+                'status' => 'required',
+            ],
+            [
+                'date.required' => 'Ngày không được để trống',
+                'start.required' => 'Không được để trống',
+                'end.required' => 'Không được để trống',
+                'duration.numeric' => 'Nên ở dạng số',
+                'duration.required' => 'Không được để trống',
+                'duration.min' => 'Không được phép âm',
+                'hour_salary.numeric' => 'Nên ở dạng số',
+                'hour_salary.required' => 'Không được để trống',
+                'hour_salary.min' => 'Không được phép âm',
+                'lesson.required' => 'Bài học không được để trống',
+                'status.required' => 'Trạng thái không được để trống',
+
+            ]);
+    }
+
+    public function uploadFile(UploadedFile $file): string
+    {
+        return EzUpload::uploadToStorage($file, $file->getClientOriginalName(), "/logs");
+    }
+
+    public function store($attributes, array $files)
+    {
+
+        $validate = $this->validate($attributes);
+        if ($validate->fails()) {
+
+            return redirect()->back()->withErrors($validate->errors());
+        }
+        $attributes['attachments'] = [];
+        if (count($files) > 0) {
+            foreach ($files['attachments'] as $file) {
+                $attributes['attachments'][] = $this->uploadFile($file);
+            }
+        }
+        $this->logRepository->create(
+            (new LogStoreObject(
+                grade_id: $attributes['grade_id'],
+                teacher_id: $attributes['teacher_id'],
+                date: $attributes['date'],
+                start: $attributes['start'],
+                end: $attributes['end'],
+                duration: $attributes['duration'],
+                hour_salary: $attributes['hour_salary'],
+                log_salary: ($attributes['duration'] / 60) * $attributes['hour_salary'],
+                lesson: $attributes['lesson'],
+                teacher_video: $attributes['teacher_video'],
+                drive: $attributes['drive'],
+                information: $attributes['information'],
+                status: json_encode($attributes['status']),
+                assessment: $attributes['assessment'],
+                question: $attributes['question'],
+                attachments: json_encode($attributes['attachments'])
+            ))->toArray()
+        );
+        return to_route("logs.index")->with("success", "Thêm thành công");
+    }
+
+    public function update(array $attributes, array $files, string $id): RedirectResponse
+    {
+        $validate = $this->validate($attributes);
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate->errors());
+        }
+        if (count($files) > 0) {
+            $attributes['attachments'] = [];
+            foreach ($files['attachments'] as $file) {
+                $attributes['attachments'][] = $this->uploadFile($file);
+            }
+        } else {
+            $attributes['attachments'] = json_decode($attributes['attachments-old']);
+        }
+        $this->logRepository->update((new LogStoreObject(
+            grade_id: $attributes['grade_id'],
+            teacher_id: $attributes['teacher_id'],
+            date: $attributes['date'],
+            start: $attributes['start'],
+            end: $attributes['end'],
+            duration: $attributes['duration'],
+            hour_salary: $attributes['hour_salary'],
+            log_salary: ($attributes['duration'] / 60) * $attributes['hour_salary'],
+            lesson: $attributes['lesson'],
+            teacher_video: $attributes['teacher_video'],
+            drive: $attributes['drive'],
+            information: $attributes['information'],
+            status: json_encode($attributes['status']),
+            assessment: $attributes['assessment'],
+            question: $attributes['question'],
+            attachments: $attributes['attachments'][0] ? json_encode($attributes['attachments']) : null
+        ))->toArray(), $id);
+        return to_route('logs.index')->with("success", "Cập nhập thành công");
+
     }
 }

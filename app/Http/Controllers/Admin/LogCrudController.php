@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\LogService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -33,6 +34,7 @@ class LogCrudController extends Controller
             'label' => 'Nhật ký buổi học',
             'columns' => $this->logService->setupListOperation(),
             'filters' => $this->logService->setupFilterOperation($request->input()),
+            'leftFix' => 2,
         ]);
     }
 
@@ -49,33 +51,37 @@ class LogCrudController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+
+        return $this->logService->store($request->input(), $request->file());
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        //
+        return view("admin.operations.edit", [
+            'entry' => $this->logService->setupEditOperation($id)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
-        //
+        return $this->logService->update($request->input(), $request->file(), $id);
     }
 
     /**

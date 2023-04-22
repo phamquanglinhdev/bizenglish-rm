@@ -16,8 +16,8 @@ class DataBroTable
         ]);
     }
 
-    public static function cView($value,$params): string
+    public static function cView($value, $params): string
     {
-        return view("admin.operations.columns." . $value,$params);
+        return (string)view("admin.operations.columns." . $value, $params);
     }
 }

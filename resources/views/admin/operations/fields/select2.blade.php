@@ -11,7 +11,7 @@
     <div class="select2-{{$field["color"]??"success"}} mb-3">
         <select id="{{$field["name"]}}" name="{{$field['name']}}" class="select2 form-select">
             @foreach($field['options'] as $key => $option)
-                @if(in_array($key,$field['value']??[]))
+                @if($key==$field['value']))
                     <option value="{{$key}}" selected>{{$option}} </option>
                 @else
                     <option value="{{$key}}">{{$option}} </option>

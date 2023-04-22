@@ -536,13 +536,9 @@
 <script src="{{asset("vendor/js/menu.js")}}"></script>
 <!-- endbuild -->
 
-<!-- Vendors JS -->
-<script src="{{asset("vendor/libs/apex-charts/apexcharts.js")}}"></script>
-
 <!-- Main JS -->
 <script src="{{asset("js/main.js")}}"></script>
 <!-- Page JS -->
-<script src="{{asset("js/dashboards-analytics.js")}}"></script>
 <script src="{{asset("vendor/libs/sweetalert2/sweetalert2.js")}}"></script>
 @if(session("success"))
     <script>
