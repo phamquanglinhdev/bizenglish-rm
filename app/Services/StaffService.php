@@ -20,7 +20,6 @@ class StaffService implements \App\Contract\CrudServicesInterface
 {
     public function __construct(
         private readonly StaffRepository   $staffRepository,
-        private readonly StudentRepository $studentRepository,
     )
     {
     }
@@ -150,7 +149,7 @@ class StaffService implements \App\Contract\CrudServicesInterface
         return $entry;
     }
 
-    public function setupEditOperation($id)
+    public function setupEditOperation($id): RedirectResponse|CrudEntry
     {
         $old = $this->staffRepository->show($id);
         if (!isset($old->id)) {
@@ -159,7 +158,7 @@ class StaffService implements \App\Contract\CrudServicesInterface
         return $this->setupCreateOperation($old);
     }
 
-    public function validate($attributes, $id = null)
+    public function validate($attributes, $id = null): \Illuminate\Validation\Validator
     {
         return Validator::make($attributes,
             [
@@ -248,6 +247,6 @@ class StaffService implements \App\Contract\CrudServicesInterface
         if ($this->staffRepository->delete($id))
             return to_route("staffs.index")->with("success", "Xóa thành công");
         else
-            return to_route("staffs.index")->with("success", "Xóa thành công");
+            return to_route("staffs.index")->with("success", "Xóa thất bại");
     }
 }

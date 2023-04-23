@@ -8,7 +8,10 @@ class EzUpload
 {
     public static function uploadToStorage(UploadedFile $file, string $name, string $folders = ""): string
     {
-        $file->move(public_path() . "/uploads" . $folders, $name);
-        return "/uploads/" . $folders . "/" . $name;
+        try {
+            $file->move(public_path() . "/uploads" . $folders, $name);
+        } finally {
+            return "/uploads/" . $folders . "/" . $name;
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -39,17 +40,19 @@ class StudentCrudController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view("admin.operations.create", [
+            'entry' => $this->studentService->setupCreateOperation()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        return $this->studentService->store($request->input(), $request->file());
     }
 
     /**
@@ -63,9 +66,11 @@ class StudentCrudController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        //
+        return view("admin.operations.edit", [
+            'entry' => $this->studentService->setupEditOperation($id)
+        ]);
     }
 
     /**
@@ -73,14 +78,14 @@ class StudentCrudController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return $this->studentService->update($request->input(), $request->file(), $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
-        //
+        return $this->studentService->delete($id);
     }
 }

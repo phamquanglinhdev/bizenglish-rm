@@ -15,7 +15,7 @@
     <label for="{{$field['name']}}" class="form-label">{{$field['label']}}</label>
     <div class="card">
         <div class="card-body">
-            <div class="form-repeater">
+            <div class="repeat-{{$field['name']}}">
                 <div data-repeater-list="{{$field['name']}}">
                     @if($field['value'])
                         @foreach($field['value'] as $key => $row)
@@ -76,5 +76,24 @@
 <!-- /Form Repeater -->
 @push("page_js")
     <script src="{{asset("vendor/libs/jquery-repeater/jquery-repeater.js")}}"></script>
-    <script src="{{asset("js/forms-extras.js")}}"></script>
+    <script>
+        "use strict";
+        $(function () {
+            var n, o, t = $(".repeat-{{$field['name']}}");
+            t.length && (n = 2, o = 0, t.on("submit", function (e) {
+                e.preventDefault()
+            }), t.repeater({
+                show: function () {
+                    var r = $(this).find(".form-control, .form-select"), a = $(this).find(".form-label");
+                    r.each(function (e) {
+                        var t = "form-repeater-" + n + "-" + o;
+                        $(r[e]).attr("id", t), $(a[e]).attr("for", t), o++
+                    }), n++, $(this).slideDown()
+                }, hide: function (e) {
+                    $(this).slideUp(e)
+                }
+            }))
+        });
+
+    </script>
 @endpush
