@@ -9,7 +9,7 @@
 @endsection
 @section("content")
     <div class="container-fluid">
-        <div class="h3 text-uppercase ql-font-serif bold">Thêm {{$entry->getLabel()}}</div>
+        <div class="h3 text-uppercase ql-font-serif bold">Chỉnh sửa {{$entry->getLabel()}}</div>
 
         <div class="bg-white p-1">
             <div class="row">
