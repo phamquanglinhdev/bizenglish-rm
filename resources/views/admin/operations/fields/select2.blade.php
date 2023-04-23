@@ -2,6 +2,7 @@
     /**
      * @var $field
      */
+    $field['value'] = $field['value']??-1
 @endphp
 @push("page_css")
     <link rel="stylesheet" href="{{asset("vendor/libs/select2/select2.css")}}"/>
@@ -11,7 +12,8 @@
     <div class="select2-{{$field["color"]??"success"}} mb-3">
         <select id="{{$field["name"]}}" name="{{$field['name']}}" class="select2 form-select">
             @foreach($field['options'] as $key => $option)
-                @if($key==$field['value']))
+                @if($key==$field['value'])
+                    )
                     <option value="{{$key}}" selected>{{$option}} </option>
                 @else
                     <option value="{{$key}}">{{$option}} </option>

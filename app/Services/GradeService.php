@@ -264,7 +264,7 @@ class GradeService implements CrudServicesInterface
         $this->gradeRepository->syncRelation($grade, "Staffs", $attributes["staffs"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Supporters", $attributes["supporters"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Teachers", $attributes["teachers"] ?? []);
-        $this->gradeRepository->syncRelation($grade, "Students", $attributes["students"] ?? []);
+        $this->gradeRepository->syncRelation($grade, "Student", $attributes["students"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Clients", $attributes["clients"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Menus", $attributes["menus"] ?? []);
     }
@@ -365,6 +365,6 @@ class GradeService implements CrudServicesInterface
         }
         $this->sync($old, []);
         $this->gradeRepository->update(['disable' => 1], $id);
-        return to_route("grades.index")->with("success", "Xóa thành công");
+
     }
 }

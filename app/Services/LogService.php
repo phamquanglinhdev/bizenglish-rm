@@ -62,9 +62,55 @@ class LogService implements \App\Contract\CrudServicesInterface
     }
 
     public
-    function setupFilterOperation($attributes = []): array
+    function setupFilterOperation($old = []): array
     {
-        return [];
+        return [
+            [
+                'name' => 'date',
+                'label' => 'Ngày',
+                'type' => 'date',
+                'value' => $old['date'] ?? null,
+            ],
+            [
+                'name' => 'student',
+                'label' => 'Học sinh',
+                'type' => 'text',
+                'value' => $old['student'] ?? null,
+            ],
+            [
+                'name' => 'teacher',
+                'label' => 'Giáo viên',
+                'type' => 'text',
+                'value' => $old['teacher'] ?? null,
+            ],
+            [
+                'name' => 'client',
+                'label' => 'Đối tác',
+                'type' => 'text',
+                'value' => $old['client'] ?? null,
+            ],
+            [
+                'name' => 'partner',
+                'label' => 'Đối tác cung cấp',
+                'type' => 'text',
+                'value' => $old['partner'] ?? null,
+            ],
+            [
+                'name' => 'status',
+                'label' => 'Tình trạng lớp học',
+                'type' => 'select2',
+                'value' => $old['status'] ?? null,
+                'options' => [
+                    'all' => null,
+                    0 => 'Học viên và giáo viên vào đúng giờ',
+                    1 => 'Học sinh muộn',
+                    2 => 'Giáo viên muộn',
+                    3 => 'Học sinh hủy buổi học',
+                    4 => 'Giáo viên hủy buổi học',
+                ]
+            ],
+
+        ];
         // TODO: Implement setupFilterOperation() method.
     }
 
@@ -246,10 +292,10 @@ class LogService implements \App\Contract\CrudServicesInterface
                     date: $log['date'],
                     start: $log['start'],
                     end: $log['end'],
-                    teacher: "-",
-                    students: [],
-                    clients: [],
-                    partner: "-",
+                    teacher: json_encode($log->Teacher()->first()),
+                    students: $log->Students(),
+                    clients: $log->Clients(),
+                    partner: $log->Partner() ?? null,
                     lesson: $log['lesson'],
                     teacher_video: $log['teacher_video'],
                     drive: $log['drive'],
@@ -259,7 +305,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                     status: Str::limit($log->StatusShow(), 40),
                     assessment: $log['assessment'],
                     attachments: json_decode($log['attachments']),
-                    confirm: "-"
+                    confirm: $log->StudentAccept()
                 ))->toArray()
             )->toArray(), label: "Nhật ký lớp học");
         return DataBroTable::collect($logListViewModel->getLogs(), $count, $attributes);
@@ -369,5 +415,10 @@ class LogService implements \App\Contract\CrudServicesInterface
         ))->toArray(), $id);
         return to_route('logs.index')->with("success", "Cập nhập thành công");
 
+    }
+
+    public function delete($id): int
+    {
+        return $this->logRepository->delete($id);
     }
 }

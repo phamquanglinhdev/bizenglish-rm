@@ -97,7 +97,7 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="{{url("/grades")}}" class="menu-link">
+                    <a href="{{url("/staffs")}}" class="menu-link">
                         <i class="menu-icon tf-icons bx bx-user-pin"></i>
                         <div data-i18n="Email">Nhân viên</div>
                     </a>
@@ -109,7 +109,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{url("/grades")}}" class="menu-link">
+                    <a href="{{url("/students")}}" class="menu-link">
                         <i class="menu-icon tf-icons bx bx-child"></i>
                         <div data-i18n="Email">Học sinh</div>
                     </a>

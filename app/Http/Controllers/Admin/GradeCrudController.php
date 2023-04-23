@@ -78,7 +78,7 @@ class GradeCrudController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
         return $this->gradeService->update($request->input(), $id);
     }
@@ -88,6 +88,10 @@ class GradeCrudController extends Controller
      */
     public function destroy(string $id): ?RedirectResponse
     {
-        return $this->gradeService->delete($id);
+        if ($this->gradeService->delete($id)) {
+            return to_route("grades.index")->with("success", "Xóa thành công");
+        } else {
+            return to_route("grade.index")->with("error", "Xóa thất bại");
+        }
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\LogScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Collection\Collection;
 
 class Log extends Model
@@ -34,7 +36,13 @@ class Log extends Model
 
     public function Partner(): ?string
     {
-//        return $this->Teacher()->first()->Partner()->first();
+        $teacher = $this->Teacher()->first();
+        if (isset($teacher->id)) {
+            $partner = $teacher->Partner()->first();
+            if (isset($partner->id)) {
+                return $partner;
+            }
+        }
         return null;
     }
 
@@ -73,6 +81,31 @@ class Log extends Model
                     return $status["message"];
             }
         }
+        return '';
+    }
 
+    public function StudentAccept(): string
+    {
+        $ac = DB::table("student_log")->where("log_id", "=", $this->id);
+        if ($ac->count() == 0) {
+            return "Chưa có HS xác nhận";
+        } else {
+            $students = DB::table("student_log")->where("log_id", "=", $this->id)->get();
+            foreach ($students as $student) {
+                $name = DB::table("users")->where("id", "=", $student->student_id)->first()->name;
+                if ($student->accept == 0) {
+                    $acp = "Đúng";
+                } else {
+                    $acp = "Sai";
+                }
+                $message = "<div> Xác nhận $acp </div>";
+                if ($student->comment != null) {
+                    $message .= "<div>Thông tin thêm: $student->comment</div> ";
+                }
+
+
+            }
+            return $message;
+        }
     }
 }

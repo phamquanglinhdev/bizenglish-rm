@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\LogService;
+use App\Services\StaffService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class LogCrudController extends Controller
+class StaffCrudController extends Controller
 {
-    private LogService $logService;
+    private StaffService $staffServices;
 
     /**
-     * @param LogService $logService
+     * @param StaffService $staffServices
      */
-    public function __construct(LogService $logService)
+    public function __construct(StaffService $staffServices)
     {
-        $this->logService = $logService;
+        $this->staffServices = $staffServices;
     }
 
     /**
@@ -28,13 +28,12 @@ class LogCrudController extends Controller
     {
         if ($request->ajax()) {
 //            dd($this->logService->list($request->input()));
-            return $this->logService->list($request->input());
+            return $this->staffServices->list($request->input());
         }
         return view("admin.operations.list", [
-            'label' => 'Nhật ký buổi học',
-            'columns' => $this->logService->setupListOperation(),
-            'filters' => $this->logService->setupFilterOperation($request->input()),
-            'leftFix' => 2,
+            'label' => 'Nhân viên',
+            'columns' => $this->staffServices->setupListOperation(),
+            'filters' => $this->staffServices->setupFilterOperation($request->input()),
         ]);
     }
 
@@ -43,8 +42,8 @@ class LogCrudController extends Controller
      */
     public function create(): View
     {
-        return view("admin.operations.create", [
-            'entry' => $this->logService->setupCreateOperation()
+        return \view("admin.operations.create", [
+            'entry' => $this->staffServices->setupCreateOperation()
         ]);
     }
 
@@ -53,17 +52,16 @@ class LogCrudController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
-        return $this->logService->store($request->input(), $request->file());
+        $this->staffServices->store($request->input());
+        return to_route("staffs.index")->with("success", "Thêm thành công");
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-
+        //
     }
 
     /**
@@ -72,16 +70,16 @@ class LogCrudController extends Controller
     public function edit(string $id): View
     {
         return view("admin.operations.edit", [
-            'entry' => $this->logService->setupEditOperation($id)
+            'entry' => $this->staffServices->setupEditOperation($id)
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): RedirectResponse
+    public function update(Request $request, string $id)
     {
-        return $this->logService->update($request->input(), $request->file(), $id);
+        return $this->staffServices->update($request->input(), $id);
     }
 
     /**
@@ -89,10 +87,6 @@ class LogCrudController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
-        if ($this->logService->delete($id)) {
-            return to_route("logs.index")->with("success", "Xóa thành công");
-        } else {
-            return to_route("logs.index")->with("error", "Xóa thất bại");
-        }
+        return $this->staffServices->delete($id);
     }
 }

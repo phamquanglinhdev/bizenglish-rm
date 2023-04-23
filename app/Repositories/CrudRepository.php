@@ -63,7 +63,12 @@ class CrudRepository
 
     public function delete(string $id): int
     {
-        return $this->getQuery()->where("id", $id)->update(["disable", 1]);
+        return $this->getQuery()->where("id", $id)->update(["disable" => 1]);
+    }
+
+    public function forceDelete(string $id): int
+    {
+        return $this->getQuery()->where("id", $id)->delete();
     }
 
     public function getForSelect(): array
@@ -80,6 +85,7 @@ class CrudRepository
     {
         return $collection->{$relationName}()->sync($relationValue);
     }
+
 
     public function count($attributes): int
     {

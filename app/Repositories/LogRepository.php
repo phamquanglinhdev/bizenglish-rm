@@ -19,6 +19,9 @@ class LogRepository extends CrudRepository
      */
     public function filter(Builder $query, array $attributes): Builder
     {
+        $query->whereHas("grade", function (Builder $builder) {
+            $builder->where("disable", 0);
+        });
         if (isset($attributes['grade'])) {
             $value = $attributes["grade"];
             $query->whereHas("grade", function (Builder $grade) use ($value) {
