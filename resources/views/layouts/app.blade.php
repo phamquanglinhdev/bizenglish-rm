@@ -544,14 +544,12 @@
     <script>
         $(document).ready(
             function () {
-                $(document).ajaxComplete(function () {
-                    Swal.fire({
-                        icon: "success",
-                        title: '{{session("success")}}',
-                        showConfirmButton: !1,
-                        timer: 1500,
-                        buttonsStyling: !1
-                    })
+                Swal.fire({
+                    icon: "success",
+                    title: '{{session("success")}}',
+                    showConfirmButton: !1,
+                    timer: 1500,
+                    buttonsStyling: !1
                 })
             }
         )
