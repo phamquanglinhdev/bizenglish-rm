@@ -4,12 +4,14 @@
     @if(isset($field['value']))
         {{--        @dd($field['value'])--}}
         <input value="{{$field['value']}}" name="{{$field['name']}}-old" hidden="">
-        <div class="mb-2">
-            <a href="{{url($field['value'])}}" class="badge bg-label-primary" target="_blank">
-                <i class='bx bxs-file-blank'></i>
-                {{str_ireplace("/uploads/","",$field['value'])}}
-            </a>
-        </div>
+        @if($field['value']!="")
+            <div class="mb-2">
+                <a href="{{url($field['value'])}}" class="badge bg-label-primary" target="_blank">
+                    <i class='bx bxs-file-blank'></i>
+                    {{str_ireplace("/uploads/","",$field['value'])}}
+                </a>
+            </div>
+        @endif
     @endif
     <input value="{{$field['value']??null}}" class="form-control" type="file" id="{{$field['name']}}"
            name="{{$field['name']}}">

@@ -11,6 +11,9 @@
     <label for="{{$field["name"]}}" class="form-label mb-1 mt-2">{{$field['label']}}</label>
     <div class="select2-{{$field["color"]??"success"}} mb-3">
         <select id="{{$field["name"]}}" name="{{$field['name']}}" class="select2 form-select">
+            @if($field['nullable'])
+                <option></option>
+            @endif
             @foreach($field['options'] as $key => $option)
                 @if($key==$field['value'])
                     )

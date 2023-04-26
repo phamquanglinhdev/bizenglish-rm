@@ -5,7 +5,12 @@ namespace App\Models;
 use App\Models\Scopes\TeacherScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property string $files
+ * @property string $password
+ */
 class Teacher extends User
 {
     use HasFactory;
@@ -22,5 +27,15 @@ class Teacher extends User
     public function Partner(): BelongsTo
     {
         return $this->belongsTo(Partner::class, "partner_id", "id");
+    }
+
+    public function Skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, "teacher_skill", "teacher_id", "skill_id");
+    }
+
+    public function Grades(): BelongsToMany
+    {
+        return $this->belongsToMany(Grade::class, "teacher_grade", "teacher_id", "grade_id");
     }
 }

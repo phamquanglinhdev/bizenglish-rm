@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ClientCrudController;
 use App\Http\Controllers\Admin\GradeCrudController;
 use App\Http\Controllers\Admin\LogCrudController;
 use App\Http\Controllers\Admin\StaffCrudController;
 use App\Http\Controllers\Admin\StudentCrudController;
+use App\Http\Controllers\Admin\TeacherCrudController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,8 @@ Route::middleware('auth')->prefix("/")->group(function () {
     Route::resource("logs", LogCrudController::class);
     Route::resource("staffs", StaffCrudController::class);
     Route::resource("students", StudentCrudController::class);
+    Route::resource("teachers", TeacherCrudController::class);
+    Route::resource("clients", ClientCrudController::class);
 });
 Route::get("/login", [AuthController::class, "login"])->name("login");
 Route::post("/login", [AuthController::class, "authenticate"])->name("authenticate");
