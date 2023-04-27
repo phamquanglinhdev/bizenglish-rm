@@ -3,33 +3,32 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\ClientService;
+use App\Services\PartnerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ClientCrudController extends Controller
+class PartnerCrudController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function __construct(
-        private readonly ClientService $clientService
+        private readonly PartnerService $partnerService
     )
     {
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request): View|JsonResponse
     {
         if ($request->ajax()) {
-            return $this->clientService->list($request->input());
+            return $this->partnerService->list($request->input());
         }
         return view("admin.operations.list", [
-            'label' => 'Đối tác',
-            'columns' => $this->clientService->setupListOperation(),
-            'filters' => $this->clientService->setupFilterOperation($request->input()),
-            'leftFix' => 2,
+            'label' => 'Partnership',
+            'columns' => $this->partnerService->setupListOperation(),
+            'filters' => $this->partnerService->setupFilterOperation($request->input()),
         ]);
     }
 
@@ -38,17 +37,17 @@ class ClientCrudController extends Controller
      */
     public function create(): View
     {
-        return view("admin.operations.create", [
-            'entry' => $this->clientService->setupCreateOperation()
+        return \view("admin.operations.create", [
+            'entry' => $this->partnerService->setupCreateOperation()
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        return $this->clientService->create($request->all());
+        return $this->partnerService->create($request->all());
     }
 
     /**
@@ -65,7 +64,7 @@ class ClientCrudController extends Controller
     public function edit(string $id): View
     {
         return \view("admin.operations.edit", [
-            'entry' => $this->clientService->setupEditOperation($id)
+            'entry' => $this->partnerService->setupEditOperation($id)
         ]);
     }
 
@@ -74,14 +73,14 @@ class ClientCrudController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-        return $this->clientService->update($request->all(), $id);
+        return $this->partnerService->update($request->all(), $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): RedirectResponse
+    public function destroy(string $id)
     {
-        return $this->clientService->delete($id);
+        //
     }
 }

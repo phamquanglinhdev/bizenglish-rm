@@ -79,18 +79,33 @@
     <script>
         "use strict";
         $(function () {
+            let length = 1
             var n, o, t = $(".repeat-{{$field['name']}}");
             t.length && (n = 2, o = 0, t.on("submit", function (e) {
                 e.preventDefault()
             }), t.repeater({
                 show: function () {
+                    length++
+                    console.log(length)
                     var r = $(this).find(".form-control, .form-select"), a = $(this).find(".form-label");
                     r.each(function (e) {
                         var t = "form-repeater-" + n + "-" + o;
                         $(r[e]).attr("id", t), $(a[e]).attr("for", t), o++
                     }), n++, $(this).slideDown()
                 }, hide: function (e) {
-                    $(this).slideUp(e)
+                    if (length > 1) {
+                        $(this).slideUp(e)
+                        length--
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: 'Không thể xóa cột mặc định',
+                            showConfirmButton: !1,
+                            timer: 1500,
+                            buttonsStyling: !1
+                        })
+                    }
+
                 }
             }))
         });

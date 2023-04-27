@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\ClientCrudController;
+use App\Http\Controllers\Admin\CustomerCrudController;
 use App\Http\Controllers\Admin\GradeCrudController;
 use App\Http\Controllers\Admin\LogCrudController;
+use App\Http\Controllers\Admin\PartnerCrudController;
 use App\Http\Controllers\Admin\StaffCrudController;
 use App\Http\Controllers\Admin\StudentCrudController;
 use App\Http\Controllers\Admin\TeacherCrudController;
@@ -31,7 +33,12 @@ Route::middleware('auth')->prefix("/")->group(function () {
     Route::resource("students", StudentCrudController::class);
     Route::resource("teachers", TeacherCrudController::class);
     Route::resource("clients", ClientCrudController::class);
+    Route::resource("customers", CustomerCrudController::class);
+    Route::resource("partners", PartnerCrudController::class);
 });
 Route::get("/login", [AuthController::class, "login"])->name("login");
 Route::post("/login", [AuthController::class, "authenticate"])->name("authenticate");
 Route::get("/logout", [AuthController::class, "logout"])->name("logout");
+Route::get("/detail", function () {
+    return view("admin.operations.profile");
+});

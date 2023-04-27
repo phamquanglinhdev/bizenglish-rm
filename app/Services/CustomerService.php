@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Client;
-use App\Repositories\ClientRepository;
+use App\Contract\CrudServicesInterface;
+use App\Models\Customer;
+use App\Models\Teacher;
+use App\Repositories\CustomerRepository;
+use App\Repositories\StaffRepository;
 use App\Untils\DataBroTable;
 use App\Untils\EzUpload;
-use App\ViewModels\Client\ClientListViewModel;
-use App\ViewModels\Client\Object\ClientListObject;
-use App\ViewModels\Client\Object\ClientStoreObject;
+use App\ViewModels\Customer\CustomerListViewModel;
+use App\ViewModels\Customer\Object\CustomerListObject;
+use App\ViewModels\Customer\Object\CustomerStoreObject;
 use App\ViewModels\Entry\CrudEntry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,10 +19,11 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class ClientService implements \App\Contract\CrudServicesInterface
+class CustomerService implements CrudServicesInterface
 {
     public function __construct(
-        private readonly ClientRepository $clientRepository,
+        private readonly CustomerRepository $customerRepository,
+        private readonly StaffRepository    $staffRepository,
     )
     {
     }
@@ -27,34 +31,37 @@ class ClientService implements \App\Contract\CrudServicesInterface
     public function setupListOperation(): array
     {
         return [
-            'code' => 'Mã đối tác',
-            'name' => 'Tên đối tác',
-            'email' => 'Email của đối tác',
+            'code' => 'Mã khách hàng',
+            'name' => 'Tên khách hàng',
+            'staff' => 'Nhân viên quản lý',
+            'email' => 'Email của khách hàng',
             'phone' => 'Số điện thoại',
-            'client_status' => 'Tình trạng hợp tác',
+            'student_status' => 'Phân lại khách hàng',
         ];
+
     }
 
-    public function list($attributes): JsonResponse
+    public function list($attributes = null): JsonResponse
     {
-        $count = $this->clientRepository->count($attributes);
-        $clientCollection = $this->clientRepository->index($attributes);
-        $clientListViewModel = new ClientListViewModel(
-            clients: $clientCollection->map(
-                fn(Client $client) => (new ClientListObject(
-                    id: $client['id'],
-                    code: $client['code'],
-                    name: $client['name'],
-                    email: $client['email'],
-                    phone: $client['phone'] ?? "-",
-                    client_status: $client->getStatus()
+        $count = $this->customerRepository->count($attributes);
+        $customerCollection = $this->customerRepository->index($attributes);
+        $customerListViewModel = new CustomerListViewModel(
+            customers: $customerCollection->map(
+                fn(Customer $customer) => (new CustomerListObject(
+                    id: $customer['id'],
+                    code: $customer['code'],
+                    name: $customer['name'],
+                    staff: json_encode($customer->Staff()->first()),
+                    email: $customer['email'],
+                    phone: $customer['phone'],
+                    student_status: $customer->getStatus()
                 ))->toArray()
             )->toArray()
         );
-        return DataBroTable::collect($clientListViewModel->getClients(), $count, $attributes);
+        return DataBroTable::collect($customerListViewModel->getCustomers(), $count, $attributes);
     }
 
-    public function setupFilterOperation(): array
+    public function setupFilterOperation($attributes = null): array
     {
         return [];
     }
@@ -65,70 +72,84 @@ class ClientService implements \App\Contract\CrudServicesInterface
             [
                 'name' => 'required',
                 'code' => 'required',
-                'email' => 'email|required|unique:users,email,' . $id,
-                'phone' => 'numeric|required',
-                'client_status' => 'required|numeric',
+                'email' => 'email|required|unique:users,email,' . $id ?? null,
+                'staff_id' => 'numeric|required',
+                'student_status' => 'numeric|required',
                 'password' => 'required'
-            ]
-            ,
+            ],
             [
                 '*.required' => 'Không được để trống',
-                '*.numeric' => 'Không đúng định dạng',
-                'email.email' => 'Không đúng định dạng email',
-                'email.unique' => 'Email đã tồn tại trong hệ thống',
+                'email.email' => 'Định dạng email không đúng',
+                'email.unique' => 'Email đã có trong hệ thống',
+                '*.numeric' => 'Không đúng định dạng'
             ]
         );
     }
 
-    public function setupCreateOperation(Client $old = null): CrudEntry
+    public function setupCreateOperation(Customer $old = null): CrudEntry
     {
-        $entry = new CrudEntry("clients", $old->id ?? null, "Đối tác");
+        $entry = new CrudEntry("customers", $old->id ?? null, "Khách hàng");
         $entry->addField([
             'name' => 'code',
-            'label' => 'Mã đối tác',
-            'value' => $old['code'] ?? null,
+            'label' => 'Mã khách hàng',
+            'class' => 'col-md-6',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'value' => $old['code'] ?? null
         ]);
         $entry->addField([
             'name' => 'name',
-            'label' => 'Tên đối tác',
-            'value' => $old['name'] ?? null,
+            'label' => 'Tên khách hàng',
+            'class' => 'col-md-6',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'value' => $old['name'] ?? null
         ]);
         $entry->addField([
             'name' => 'email',
-            'label' => 'Email đối tác',
-            'value' => $old['email'] ?? null,
+            'label' => 'Email khách hàng',
+            'class' => 'col-md-6',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'value' => $old['email'] ?? null
         ]);
         $entry->addField([
             'name' => 'phone',
             'label' => 'Số điện thoại',
-            'value' => $old['phone'] ?? null,
+            'class' => 'col-md-6',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'value' => $old['phone'] ?? null
         ]);
         $entry->addField([
             'name' => 'facebook',
             'label' => 'Facebook',
-            'value' => $old['facebook'] ?? null,
+            'class' => 'col-md-6',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'value' => $old['facebook'] ?? null
         ]);
         $entry->addField([
-            'name' => 'client_status',
-            'label' => 'Tình trạng hợp tác',
-            'value' => $old['client_status'] ?? null,
-            'type' => 'select2',
+            'name' => 'address',
+            'label' => 'Địa chỉ',
             'class' => 'col-md-6',
+            'type' => 'text',
+            'value' => $old['address'] ?? null
+        ]);
+        $entry->addField([
+            'name' => 'staff_id',
+            'label' => 'Nhân viên quản lý',
+            'class' => 'col-md-6',
+            'type' => 'select2',
+            'options' => $this->staffRepository->getForSelect(),
+            'value' => $old['staff_id'] ?? null
+        ]);
+        $entry->addField([
+            'name' => 'student_status',
+            'label' => 'Phân loại khách hàng',
+            'class' => 'col-md-6',
+            'type' => 'select2',
             'options' => [
-                0 => 'Đang hợp tác',
-                1 => 'Hợp tác ít',
-                2 => 'Ngừng hợp tác',
-            ]
+                0 => 'Tiềm năng',
+                1 => 'Không tiềm năng',
+                2 => 'Chưa học thử'
+            ],
+            'value' => $old['staff_id'] ?? null
         ]);
         $entry->addField([
             'name' => 'extra',
@@ -196,52 +217,53 @@ class ClientService implements \App\Contract\CrudServicesInterface
              * @var UploadedFile $link
              */
             $link = $file['link'];
-            $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/teachers") ?? null;
+            $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/customers") ?? null;
         }
         /**
-         * @var Client $clientModel
+         * @var Customer $customerModel
          */
-        $clientModel = $this->clientRepository->create((new ClientStoreObject(
+        $customerModel = $this->customerRepository->create((new CustomerStoreObject(
             code: $attributes['code'],
             name: $attributes['name'],
             email: $attributes['email'],
             phone: $attributes['phone'],
-            facebook: $attributes['facebook'],
-            client_status: $attributes['client_status'],
+            address: $attributes['address'],
+            staff_id: $attributes['staff_id'],
+            student_status: $attributes['student_status'],
             extra: $attributes['extra'],
             files: $attributes['files'],
             password: $attributes['password']
         ))->toArray());
-        return to_route("clients.index")->with("success", "Thêm đối tác thành công");
+        return to_route("customers.index")->with("success", "Thêm thành công");
     }
 
     public function setupEditOperation($id): RedirectResponse|CrudEntry
     {
         /**
-         * @var Client $oldClient
+         * @var Customer $oldCustomer
          */
-        $oldClient = $this->clientRepository->show($id);
-        if (!isset($oldClient->id)) {
-            return to_route("clients.index")->with("success", "Không tìm thấy");
+        $oldCustomer = $this->customerRepository->show($id);
+        if (!isset($oldCustomer->id)) {
+            return to_route("customers.index")->with("success", "Không tìm thấy");
         }
-        return $this->setupCreateOperation($oldClient);
+        return $this->setupCreateOperation($oldCustomer);
     }
 
-    public function update($attributes, $id)
+    public function update($attributes, $id): RedirectResponse
     {
         /**
-         * @var Client $oldClient
+         * @var Customer $oldCustomer
          */
-        $oldClient = $this->clientRepository->show($id);
-        if (!isset($oldClient->id)) {
-            return to_route("clients.index")->with("success", "Không tìm thấy");
+        $oldCustomer = $this->customerRepository->show($id);
+        if (!isset($oldCustomer->id)) {
+            return to_route("customers.index")->with("success", "Không tìm thấy");
         }
         if ($attributes["password"] != null) {
             $attributes["password"] = Hash::make($attributes['password']);
         } else {
-            $attributes["password"] = $oldClient->password;
+            $attributes["password"] = $oldCustomer->password;
         }
-        $validate = $this->validate($attributes, $oldClient->id);
+        $validate = $this->validate($attributes, $oldCustomer->id);
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate->errors());
         }
@@ -254,30 +276,22 @@ class ClientService implements \App\Contract\CrudServicesInterface
 
             } else {
                 $link = $file['link'];
-                $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/clients") ?? null;
+                $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/customers") ?? null;
             }
             unset($attributes['files'][$key]['link-old']);
         }
-        $this->clientRepository->update((new ClientStoreObject(
+        $this->customerRepository->update((new CustomerStoreObject(
             code: $attributes['code'],
             name: $attributes['name'],
             email: $attributes['email'],
             phone: $attributes['phone'],
-            facebook: $attributes['facebook'],
-            client_status: $attributes['client_status'],
-            extra: $attributes['extra']??[],
+            address: $attributes['address'],
+            staff_id: $attributes['staff_id'],
+            student_status: $attributes['student_status'],
+            extra: $attributes['extra'],
             files: $attributes['files'],
             password: $attributes['password']
         ))->toArray(), $id);
-        return to_route("clients.index")->with("success", "Cập nhật thành công");
-    }
-
-    public function delete($id): RedirectResponse
-    {
-        if ($this->clientRepository->delete($id)) {
-            return to_route("clients.index")->with("success", "Xóa thành công");
-        } else {
-            return to_route("clients.index")->with("success", "Xóa thất bại");
-        }
+        return to_route("customers.index")->with("success", "Cập nhật thành công");
     }
 }

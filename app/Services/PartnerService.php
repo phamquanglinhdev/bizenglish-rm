@@ -2,24 +2,26 @@
 
 namespace App\Services;
 
-use App\Models\Client;
-use App\Repositories\ClientRepository;
+use App\Contract\CrudServicesInterface;
+use App\Models\Partner;
+use App\Repositories\PartnerRepository;
 use App\Untils\DataBroTable;
 use App\Untils\EzUpload;
-use App\ViewModels\Client\ClientListViewModel;
-use App\ViewModels\Client\Object\ClientListObject;
 use App\ViewModels\Client\Object\ClientStoreObject;
 use App\ViewModels\Entry\CrudEntry;
+use App\ViewModels\Partner\Object\PartnerListObject;
+use App\ViewModels\Partner\Object\PartnerStoreObject;
+use App\ViewModels\Partner\PartnerListViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class ClientService implements \App\Contract\CrudServicesInterface
+class PartnerService implements CrudServicesInterface
 {
     public function __construct(
-        private readonly ClientRepository $clientRepository,
+        private readonly PartnerRepository $partnerRepository
     )
     {
     }
@@ -29,7 +31,7 @@ class ClientService implements \App\Contract\CrudServicesInterface
         return [
             'code' => 'Mã đối tác',
             'name' => 'Tên đối tác',
-            'email' => 'Email của đối tác',
+            'email' => 'Email đối tác',
             'phone' => 'Số điện thoại',
             'client_status' => 'Tình trạng hợp tác',
         ];
@@ -37,21 +39,19 @@ class ClientService implements \App\Contract\CrudServicesInterface
 
     public function list($attributes): JsonResponse
     {
-        $count = $this->clientRepository->count($attributes);
-        $clientCollection = $this->clientRepository->index($attributes);
-        $clientListViewModel = new ClientListViewModel(
-            clients: $clientCollection->map(
-                fn(Client $client) => (new ClientListObject(
-                    id: $client['id'],
-                    code: $client['code'],
-                    name: $client['name'],
-                    email: $client['email'],
-                    phone: $client['phone'] ?? "-",
-                    client_status: $client->getStatus()
-                ))->toArray()
-            )->toArray()
-        );
-        return DataBroTable::collect($clientListViewModel->getClients(), $count, $attributes);
+        $count = $this->partnerRepository->count($attributes);
+        $partnerCollection = $this->partnerRepository->index($attributes);
+        $partnerListViewModel = new PartnerListViewModel($partnerCollection->map(
+            fn(Partner $partner) => (new PartnerListObject(
+                id: $partner['id'],
+                code: $partner['code'],
+                name: $partner['name'],
+                email: $partner['email'],
+                phone: $partner['phone'] ?? "-",
+                client_status: $partner->getStatus()
+            ))->toArray()
+        )->toArray());
+        return DataBroTable::collect($partnerListViewModel->getPartners(), $count, $attributes);
     }
 
     public function setupFilterOperation(): array
@@ -80,43 +80,43 @@ class ClientService implements \App\Contract\CrudServicesInterface
         );
     }
 
-    public function setupCreateOperation(Client $old = null): CrudEntry
+    public function setupCreateOperation(Partner $old = null): CrudEntry
     {
-        $entry = new CrudEntry("clients", $old->id ?? null, "Đối tác");
+        $entry = new CrudEntry("partners", $old->id ?? null, "Partnership");
         $entry->addField([
             'name' => 'code',
-            'label' => 'Mã đối tác',
-            'value' => $old['code'] ?? null,
+            'label' => 'Mã partnership',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'class' => 'col-md-6',
+            'value' => $old['code'] ?? null,
         ]);
         $entry->addField([
             'name' => 'name',
-            'label' => 'Tên đối tác',
-            'value' => $old['name'] ?? null,
+            'label' => 'Tên partnership',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'class' => 'col-md-6',
+            'value' => $old['name'] ?? null,
         ]);
         $entry->addField([
             'name' => 'email',
-            'label' => 'Email đối tác',
-            'value' => $old['email'] ?? null,
+            'label' => 'Email partnership',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'class' => 'col-md-6',
+            'value' => $old['email'] ?? null,
         ]);
         $entry->addField([
             'name' => 'phone',
             'label' => 'Số điện thoại',
-            'value' => $old['phone'] ?? null,
             'type' => 'text',
-            'class' => 'col-md-6'
+            'class' => 'col-md-6',
+            'value' => $old['phone'] ?? null,
         ]);
         $entry->addField([
             'name' => 'facebook',
-            'label' => 'Facebook',
-            'value' => $old['facebook'] ?? null,
+            'label' => 'Link facebook',
             'type' => 'text',
-            'class' => 'col-md-6'
+            'class' => 'col-md-6',
+            'value' => $old['facebook'] ?? null,
         ]);
         $entry->addField([
             'name' => 'client_status',
@@ -184,6 +184,7 @@ class ClientService implements \App\Contract\CrudServicesInterface
 
     public function create($attributes): RedirectResponse
     {
+
         if ($attributes["password"] != null) {
             $attributes["password"] = Hash::make($attributes['password']);
         }
@@ -195,13 +196,15 @@ class ClientService implements \App\Contract\CrudServicesInterface
             /**
              * @var UploadedFile $link
              */
-            $link = $file['link'];
-            $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/teachers") ?? null;
+            $link = $file['link'] ?? null;
+            if ($link != null) {
+                $attributes['files'][$key]['link'] = EzUpload::uploadToStorage($link, $link->getClientOriginalName(), "/teachers") ?? null;
+            }
         }
         /**
-         * @var Client $clientModel
+         * @var Partner $partnerModel
          */
-        $clientModel = $this->clientRepository->create((new ClientStoreObject(
+        $dataCreate = (new PartnerStoreObject(
             code: $attributes['code'],
             name: $attributes['name'],
             email: $attributes['email'],
@@ -211,37 +214,37 @@ class ClientService implements \App\Contract\CrudServicesInterface
             extra: $attributes['extra'],
             files: $attributes['files'],
             password: $attributes['password']
-        ))->toArray());
-        return to_route("clients.index")->with("success", "Thêm đối tác thành công");
+        ))->toArray();
+        $partnerModel = $this->partnerRepository->create($dataCreate);
+        return to_route("partners.index")->with("success", "Thêm  thành công");
     }
 
     public function setupEditOperation($id): RedirectResponse|CrudEntry
     {
         /**
-         * @var Client $oldClient
+         * @var Partner $partnerClient
          */
-        $oldClient = $this->clientRepository->show($id);
-        if (!isset($oldClient->id)) {
-            return to_route("clients.index")->with("success", "Không tìm thấy");
+        $partnerClient = $this->partnerRepository->show($id);
+        if (!isset($partnerClient->id)) {
+            return to_route("partners.index")->with("success", "Không tìm thấy");
         }
-        return $this->setupCreateOperation($oldClient);
+        return $this->setupCreateOperation($partnerClient);
     }
-
-    public function update($attributes, $id)
+    public function update($attributes,$id): RedirectResponse
     {
         /**
-         * @var Client $oldClient
-         */
-        $oldClient = $this->clientRepository->show($id);
-        if (!isset($oldClient->id)) {
-            return to_route("clients.index")->with("success", "Không tìm thấy");
+        * @var Partner $oldPartner
+        */
+        $oldPartner = $this->partnerRepository->show($id);
+        if (!isset($oldPartner->id)) {
+            return to_route("partners.index")->with("success", "Không tìm thấy");
         }
         if ($attributes["password"] != null) {
             $attributes["password"] = Hash::make($attributes['password']);
         } else {
-            $attributes["password"] = $oldClient->password;
+            $attributes["password"] = $oldPartner->password;
         }
-        $validate = $this->validate($attributes, $oldClient->id);
+        $validate = $this->validate($attributes, $oldPartner->id);
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate->errors());
         }
@@ -258,7 +261,7 @@ class ClientService implements \App\Contract\CrudServicesInterface
             }
             unset($attributes['files'][$key]['link-old']);
         }
-        $this->clientRepository->update((new ClientStoreObject(
+        $this->partnerRepository->update((new PartnerStoreObject(
             code: $attributes['code'],
             name: $attributes['name'],
             email: $attributes['email'],
@@ -269,15 +272,7 @@ class ClientService implements \App\Contract\CrudServicesInterface
             files: $attributes['files'],
             password: $attributes['password']
         ))->toArray(), $id);
-        return to_route("clients.index")->with("success", "Cập nhật thành công");
+        return to_route("partners.index")->with("success", "Cập nhật thành công");
     }
 
-    public function delete($id): RedirectResponse
-    {
-        if ($this->clientRepository->delete($id)) {
-            return to_route("clients.index")->with("success", "Xóa thành công");
-        } else {
-            return to_route("clients.index")->with("success", "Xóa thất bại");
-        }
-    }
 }

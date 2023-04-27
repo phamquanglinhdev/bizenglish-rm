@@ -120,6 +120,18 @@
                         <div data-i18n="Email">Đối tác</div>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{url("/customers")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bxs-user-detail"></i>
+                        <div data-i18n="Email">Khách hàng</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{url("/partners")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bxs-briefcase-alt-2"></i>
+                        <div data-i18n="Email">Partnership</div>
+                    </a>
+                </li>
             </ul>
         </li>
 
