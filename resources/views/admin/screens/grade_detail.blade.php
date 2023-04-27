@@ -12,7 +12,9 @@
 @section("content")
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="py-3 breadcrumb-wrapper mb-4">
-            <span class="text-muted fw-light">Thông tin lớp học:</span> {{$grade->getName()}}
+            <span class="text-muted fw-light">
+                <a onclick="window.history.back()" style="cursor: pointer"><i class="bx bx-arrow-back"></i></a>
+                Thông tin lớp học:</span> {{$grade->getName()}}
         </h4>
         <div class="row gy-4">
             <!-- User Sidebar -->
@@ -145,14 +147,34 @@
                                     <span class="timeline-point timeline-point-primary"></span>
                                     <div class="timeline-event">
                                         <div class="timeline-header mb-1">
-                                            <h6 class="mb-0 text-uppercase">{{$log->getLesson()}}</h6>
-                                            <small class="text-muted">{{$log->getDate()}} {{$log->getStart()}}
-                                                -{{$log->getEnd()}}</small>
+                                            <div class="mb-0 text-uppercase fw-bold">{{$log->getLesson()}}</div>
+                                            <small class="text-muted">
+                                                <div>
+                                                    {{$log->getDate()}} {{$log->getStart()}}
+                                                    -{{$log->getEnd()}}
+                                                </div>
+                                                <div>
+                                                    <span class="bx bx-upload"></span>
+                                                    <a class="badge bg-label-primary"
+                                                       href="{{url("teachers/".$log->getTeacher()->id)}}">
+                                                        Giáo viên: {{$log->getTeacher()->name}}
+                                                    </a>
+                                                </div>
+                                            </small>
+
                                         </div>
                                         <div class="d-flex">
-                                            <a href="javascript:void(0)" class="me-3">
-                                                <span class="fw-bold text-body">Xem chi tiết</span>
-                                            </a>
+                                            @if($log->getTeacherVideo())
+                                                <a class="badge bg-label-danger me-1" href="{{$log->getTeacherVideo()->url}}"><i
+                                                        class="bx bxl-youtube "></i>Youtube</a>
+                                            @endif
+                                            @if($log->getDrive())
+                                                <a class="badge bg-label-primary me-1" href="{{$log->getDrive()}}"><i
+                                                        class="bx  bx-video"></i>Google Drive</a>
+                                            @endif
+
+                                            <a class="badge bg-label-success me-1" href="{{url("logs/".$log->getId())}}"><i
+                                                    class="bx  bx-info-circle "></i>Chi tiết</a>
                                         </div>
                                     </div>
                                 </li>

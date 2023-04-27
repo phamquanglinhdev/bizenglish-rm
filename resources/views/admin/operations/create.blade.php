@@ -9,7 +9,9 @@
 @endsection
 @section("content")
     <div class="container-fluid">
-        <div class="h3 text-uppercase ql-font-serif bold">Thêm {{$entry->getLabel()}}</div>
+        <div class="h3 text-uppercase ql-font-serif bold">
+            <a onclick="window.history.back()" style="cursor: pointer"><i class="bx bx-arrow-back"></i></a>
+            Thêm {{$entry->getLabel()}}</div>
 
         <div class="bg-white p-1">
             <div class="row">

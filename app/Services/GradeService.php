@@ -404,17 +404,9 @@ class GradeService implements CrudServicesInterface
                 start: $log["start"],
                 end: $log['end'],
                 teacher: $log->Teacher()->first(),
-                partner: $log?->Partner(),
                 lesson: $log['lesson'],
                 teacher_video: $log['teacher_video'],
                 drive: $log['drive'],
-                duration: $log['duration'],
-                hour_salary: $log['hour_salary'],
-                log_salary: $log['log_salary'],
-                status: $log->StatusShow(),
-                assessment: $log['assessment'],
-                attachments: $log['attachments'],
-                confirm: $log['confirm']
             ))
         ));
     }

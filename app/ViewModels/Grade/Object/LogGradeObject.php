@@ -12,17 +12,9 @@ class LogGradeObject
         private readonly string  $start,
         private readonly string  $end,
         private readonly string  $teacher,
-        private readonly ?string $partner,
         private readonly string  $lesson,
         private readonly ?string $teacher_video,
         private readonly ?string $drive,
-        private readonly int     $duration,
-        private readonly int     $hour_salary,
-        private readonly int     $log_salary,
-        private readonly string  $status,
-        private readonly ?string  $assessment,
-        private readonly ?string  $attachments,
-        private readonly ?string $confirm,
     )
     {
     }
@@ -40,7 +32,7 @@ class LogGradeObject
      */
     public function getDate(): string
     {
-        return Carbon::parse($this->date)->isoFormat("DD-MM-YYYY");
+        return $this->date;
     }
 
     /**
@@ -62,17 +54,9 @@ class LogGradeObject
     /**
      * @return string
      */
-    public function getTeacher(): string
+    public function getTeacher(): object
     {
-        return $this->teacher;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPartner(): ?string
-    {
-        return $this->partner;
+        return json_decode($this->teacher);
     }
 
     /**
@@ -86,9 +70,9 @@ class LogGradeObject
     /**
      * @return string|null
      */
-    public function getTeacherVideo(): ?string
+    public function getTeacherVideo(): ?object
     {
-        return $this->teacher_video;
+        return json_decode($this->teacher_video);
     }
 
     /**
@@ -100,60 +84,9 @@ class LogGradeObject
     }
 
     /**
-     * @return int
-     */
-    public function getDuration(): int
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHourSalary(): int
-    {
-        return $this->hour_salary;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLogSalary(): int
-    {
-        return $this->log_salary;
-    }
-
-    /**
      * @return string
      */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
 
-    /**
-     * @return string|null
-     */
-    public function getAssessment(): ?string
-    {
-        return $this->assessment;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAttachments(): ?string
-    {
-        return $this->attachments;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getConfirm(): ?string
-    {
-        return $this->confirm;
-    }
 
 
 }
