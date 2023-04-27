@@ -60,9 +60,11 @@ class GradeCrudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View
     {
-        //
+        return \view("admin.screens.grade_detail", [
+            'gradeShowViewModel' => $this->gradeService->showGrade($id)
+        ]);
     }
 
     /**

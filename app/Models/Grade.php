@@ -119,4 +119,9 @@ class Grade extends Model
         }
 
     }
+
+    public function Logs()
+    {
+        return $this->hasMany(Log::class, "grade_id", "id");
+    }
 }

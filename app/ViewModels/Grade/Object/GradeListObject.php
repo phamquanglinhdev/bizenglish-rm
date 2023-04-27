@@ -142,7 +142,7 @@ class GradeListObject
     {
         return Collection::make([
             'id' => $this->getId(),
-            'name' => $this->getName(),
+            'name' => DataBroTable::cView("name", ['entry' => 'grades', 'collection' => ['name' => $this->getName(), 'id' => $this->getId()]]),
             'students' => $this->getStudents(),
             'teachers' => $this->getTeachers(),
             'staffs' => $this->getStaffs(),

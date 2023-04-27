@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contract\CrudServicesInterface;
 use App\Models\Grade;
+use App\Models\Log;
 use App\Repositories\ClientRepository;
 use App\Repositories\GradeRepository;
 use App\Repositories\MenuRepository;
@@ -14,8 +15,11 @@ use App\Repositories\TeacherRepository;
 use App\Untils\DataBroTable;
 use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Grade\GradeListViewModel;
+use App\ViewModels\Grade\GradeShowViewModel;
 use App\ViewModels\Grade\Object\GradeListObject;
+use App\ViewModels\Grade\Object\GradeShowObject;
 use App\ViewModels\Grade\Object\GradeStoreObject;
+use App\ViewModels\Grade\Object\LogGradeObject;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
@@ -264,7 +268,7 @@ class GradeService implements CrudServicesInterface
         $this->gradeRepository->syncRelation($grade, "Staffs", $attributes["staffs"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Supporters", $attributes["supporters"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Teachers", $attributes["teachers"] ?? []);
-        $this->gradeRepository->syncRelation($grade, "Student", $attributes["students"] ?? []);
+        $this->gradeRepository->syncRelation($grade, "Students", $attributes["students"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Clients", $attributes["clients"] ?? []);
         $this->gradeRepository->syncRelation($grade, "Menus", $attributes["menus"] ?? []);
     }
@@ -366,5 +370,52 @@ class GradeService implements CrudServicesInterface
         $this->sync($old, []);
         $this->gradeRepository->update(['disable' => 1], $id);
 
+    }
+
+    public function showGrade($id): GradeShowViewModel|RedirectResponse
+    {
+        /**
+         * @var Grade $gradeModel
+         */
+        $gradeModel = $this->gradeRepository->show($id);
+        if (!isset($gradeModel->id)) {
+            return to_route("grades.index")->with("success", "Không tìm thấy");
+        }
+        $logs = $gradeModel->Logs()->orderBy("created_at", "DESC")->get();
+        return new GradeShowViewModel(grade: new GradeShowObject(
+            id: $gradeModel['id'],
+            name: $gradeModel['name'],
+            teachers: $gradeModel->Teachers()->pluck("name", "id")->toArray(),
+            zoom: $gradeModel['zoom'],
+            students: $gradeModel->Students()->get()->pluck("name", "id")->toArray(),
+            clients: $gradeModel->Clients()->get()->pluck("name", "id")->toArray(),
+            staffs: $gradeModel->Staffs()->get()->pluck("name", "id")->toArray(),
+            minutes: $gradeModel['minutes'],
+            remaining: $gradeModel->getRs(),
+            information: $gradeModel['information'],
+            pricing: $gradeModel['pricing'],
+            attachment: $gradeModel['attachment'],
+            created_at: $gradeModel['created_at'],
+            time: $gradeModel['time']
+        ), logs: $logs->map(
+            fn(Log $log) => (new LogGradeObject(
+                id: $log['id'],
+                date: $log['date'],
+                start: $log["start"],
+                end: $log['end'],
+                teacher: $log->Teacher()->first(),
+                partner: $log?->Partner(),
+                lesson: $log['lesson'],
+                teacher_video: $log['teacher_video'],
+                drive: $log['drive'],
+                duration: $log['duration'],
+                hour_salary: $log['hour_salary'],
+                log_salary: $log['log_salary'],
+                status: $log->StatusShow(),
+                assessment: $log['assessment'],
+                attachments: $log['attachments'],
+                confirm: $log['confirm']
+            ))
+        ));
     }
 }
