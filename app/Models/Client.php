@@ -25,9 +25,9 @@ class Client extends User
     public function getStatus(): string
     {
         return match ($this->client_status) {
-            0 => "Đang hợp tác",
-            1 => "Hợp tác ít",
-            2 => "Ngừng hợp tác",
+            "0" => "Đang hợp tác",
+            "1" => "Hợp tác ít",
+            "2" => "Ngừng hợp tác",
             default => "Không xác định",
         };
     }
