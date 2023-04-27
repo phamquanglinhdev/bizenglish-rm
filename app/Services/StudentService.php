@@ -201,7 +201,7 @@ class StudentService implements CrudServicesInterface
             students: $studentCollection->map(
                 fn(Student $student) => (new StudentListObject(
                     id: $student['id'],
-                    status: $student['student_status'],
+                    status: $student->getStatus(),
                     code: $student['code'],
                     name: $student['name'],
                     staff: $student->Staff()->first(),

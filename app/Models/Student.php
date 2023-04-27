@@ -39,4 +39,14 @@ class Student extends User
         }
         return null;
     }
+
+    public function getStatus(): string
+    {
+        return match ($this->student_status) {
+            "0" => "Đang học",
+            "1" => "Đã ngừng học",
+            "2" => "Đang bảo lưu",
+            default => "Không xác định",
+        };
+    }
 }
