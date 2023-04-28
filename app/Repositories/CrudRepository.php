@@ -32,11 +32,13 @@ class CrudRepository
 
         $crud = $this->filter($this->getQuery(), $attributes);
         $crud = $this->filter($crud, $attributes);
-        if (isset($attributes['start'])) {
-            $crud->skip($attributes['start']);
-        }
         if (isset($attributes['length'])) {
-            $crud->take($attributes['length']);
+            if ($attributes['length'] != -1) {
+                if (isset($attributes['start'])) {
+                    $crud->skip($attributes['start']);
+                    $crud->take($attributes['length']);
+                }
+            }
         }
         try {
             return $crud->where("disable", 0)->orderBy("created_at", "DESC")->get();

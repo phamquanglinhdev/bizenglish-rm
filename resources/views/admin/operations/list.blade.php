@@ -128,6 +128,7 @@
                 searching: false,
                 sorting: false,
                 scrollCollapse: true,
+                lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
             })
 
             $(document).ajaxComplete(function () {
