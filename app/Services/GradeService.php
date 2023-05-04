@@ -243,7 +243,7 @@ class GradeService implements CrudServicesInterface
         return $this->setupCreateOperation($grade);
     }
 
-    public function validate($attributes)
+    public function validate($attributes): \Illuminate\Validation\Validator
     {
         return Validator::make($attributes, [
             'name' => 'required',
@@ -381,7 +381,7 @@ class GradeService implements CrudServicesInterface
         if (!isset($gradeModel->id)) {
             return to_route("grades.index")->with("success", "Không tìm thấy");
         }
-        $logs = $gradeModel->Logs()->orderBy("created_at", "DESC")->get();
+        $logs = $gradeModel->Logs()->orderBy("created_at", "DESC")->where("teacher_id", "!=", null)->get();
         return new GradeShowViewModel(grade: new GradeShowObject(
             id: $gradeModel['id'],
             name: $gradeModel['name'],

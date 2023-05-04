@@ -123,7 +123,7 @@
                 fixedHeader: true,
                 fixedColumns: {
                     left: {{$leftFix??1}},
-                    right: 0
+                    right: {{$rightFix??0}}
                 },
                 searching: false,
                 sorting: false,

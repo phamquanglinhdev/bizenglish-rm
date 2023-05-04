@@ -17,7 +17,7 @@ class CrudRepository
         return $this->model = $query->query;
     }
 
-    public function getQuery()
+    public function getQuery(): Builder
     {
         return $this->model->query();
     }

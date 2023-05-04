@@ -11,7 +11,7 @@ class LogGradeObject
         private readonly string  $date,
         private readonly string  $start,
         private readonly string  $end,
-        private readonly string  $teacher,
+        private readonly ?string  $teacher,
         private readonly string  $lesson,
         private readonly ?string $teacher_video,
         private readonly ?string $drive,
@@ -52,11 +52,11 @@ class LogGradeObject
     }
 
     /**
-     * @return string
+     * @return object|null
      */
-    public function getTeacher(): object
+    public function getTeacher(): ?object
     {
-        return json_decode($this->teacher);
+        return json_decode($this->teacher??null);
     }
 
     /**

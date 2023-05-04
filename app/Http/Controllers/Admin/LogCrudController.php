@@ -61,9 +61,11 @@ class LogCrudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View
     {
-
+        return view("admin.screens.log_detail", [
+            'logShowViewModel' => $this->logService->showLog($id)
+        ]);
     }
 
     /**

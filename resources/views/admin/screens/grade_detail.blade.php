@@ -7,8 +7,10 @@
     $grade = $gradeShowViewModel->getGrade();
     $logs = $gradeShowViewModel->getLogs();
 @endphp
-
 @extends("layouts.app")
+@section("title")
+    Bizenglish::Chi tiết lớp {{$grade->getName()}}
+@endsection
 @section("content")
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="py-3 breadcrumb-wrapper mb-4">
@@ -165,7 +167,8 @@
                                         </div>
                                         <div class="d-flex">
                                             @if($log->getTeacherVideo())
-                                                <a class="badge bg-label-danger me-1" href="{{$log->getTeacherVideo()->url}}"><i
+                                                <a class="badge bg-label-danger me-1"
+                                                   href="{{$log->getTeacherVideo()->url}}"><i
                                                         class="bx bxl-youtube "></i>Youtube</a>
                                             @endif
                                             @if($log->getDrive())
@@ -173,7 +176,8 @@
                                                         class="bx  bx-video"></i>Google Drive</a>
                                             @endif
 
-                                            <a class="badge bg-label-success me-1" href="{{url("logs/".$log->getId())}}"><i
+                                            <a class="badge bg-label-success me-1"
+                                               href="{{url("logs/".$log->getId())}}"><i
                                                     class="bx  bx-info-circle "></i>Chi tiết</a>
                                         </div>
                                     </div>

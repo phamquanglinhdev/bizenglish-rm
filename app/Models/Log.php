@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\LogScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use Ramsey\Collection\Collection;
 
+/**
+ * @property string $teacher_video
+ * @property string $drive
+ */
 class Log extends Model
 {
     use HasFactory;
@@ -51,6 +53,11 @@ class Log extends Model
         return $this->Grade()->first()->students()->get()->pluck('name', "id")->toArray();
     }
 
+    public function StudentsObject(): \Illuminate\Support\Collection
+    {
+        return $this->Grade()->first()->Students()->get();
+    }
+
     public function StatusShow()
     {
         if ($this->status != null) {
@@ -86,6 +93,7 @@ class Log extends Model
 
     public function StudentAccept(): string
     {
+        $message = "";
         $ac = DB::table("student_log")->where("log_id", "=", $this->id);
         if ($ac->count() == 0) {
             return "Chưa có HS xác nhận";
@@ -107,5 +115,19 @@ class Log extends Model
             }
             return $message;
         }
+    }
+
+    public function getEmbed(): string
+    {
+        if ($this->teacher_video) {
+            $video = json_decode($this->teacher_video);
+            $id = $video->id;
+            return "https://www.youtube.com/embed/$id?autoplay=1&modestbranding=1";
+        }
+        if ($this->drive) {
+            $link = str_replace("/edit", "/preview", $this->drive);
+            return str_replace("/view", "/preview", $link);
+        }
+        return "-";
     }
 }

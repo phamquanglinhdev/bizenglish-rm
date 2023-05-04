@@ -2,8 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Comment;
+use App\Models\Grade;
 use App\Models\Log;
+use App\Models\Student;
+use App\Models\Teacher;
 use App\Repositories\ClientRepository;
+use App\Repositories\CommentRepository;
 use App\Repositories\GradeRepository;
 use App\Repositories\LogRepository;
 use App\Repositories\StudentRepository;
@@ -12,11 +17,20 @@ use App\Untils\DataBroTable;
 use App\Untils\EzUpload;
 use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Log\LogListViewModel;
+use App\ViewModels\Log\LogShowViewModel;
+use App\ViewModels\Log\Object\LogCommentsObject;
+use App\ViewModels\Log\Object\LogGradeObject;
 use App\ViewModels\Log\Object\LogListObject;
+use App\ViewModels\Log\Object\LogShowObject;
 use App\ViewModels\Log\Object\LogStoreObject;
+use App\ViewModels\Log\Object\RecommendLogObject;
+use App\ViewModels\Log\Object\StudentLogObject;
+use App\ViewModels\Log\Object\TeacherLogObject;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -31,6 +45,7 @@ class LogService implements \App\Contract\CrudServicesInterface
         private readonly StudentRepository $studentRepository,
         private readonly TeacherRepository $teacherRepository,
         private readonly ClientRepository  $clientRepository,
+        private readonly CommentRepository $commentRepository,
     )
     {
     }
@@ -188,7 +203,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                     'name' => 'drive',
                     'label' => 'Google Drive Video',
                     'type' => 'text',
-                    'value' => $old["teacher_video"] ?? null,
+                    'value' => $old["drive"] ?? null,
                 ],
             ]
         ]);
@@ -257,27 +272,13 @@ class LogService implements \App\Contract\CrudServicesInterface
     }
 
     public
-    function setupEditOperation($id)
+    function setupEditOperation($id): CrudEntry
     {
         $old = $this->logRepository->show($id);
         if (!isset($old->id)) {
             return abort("404");
         }
         return $this->setupCreateOperation($old);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function getEntriesAsJsonForDatatables($draw, $rows, $totalRows, $filteredRows): array
-    {
-
-        return [
-            'draw' => $draw,
-            'recordsTotal' => $totalRows,
-            'recordsFiltered' => $filteredRows,
-            'data' => $rows,
-        ];
     }
 
     public function list($attributes): JsonResponse
@@ -288,7 +289,7 @@ class LogService implements \App\Contract\CrudServicesInterface
             logs: $logCollections->map(
                 fn(Log $log) => (new LogListObject(
                     id: $log['id'],
-                    grade: $log->grade()->first()->name,
+                    grade: json_encode($log->grade()->first()),
                     date: $log['date'],
                     start: $log['start'],
                     end: $log['end'],
@@ -308,6 +309,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                     confirm: $log->StudentAccept()
                 ))->toArray()
             )->toArray(), label: "Nhật ký lớp học");
+
         return DataBroTable::collect($logListViewModel->getLogs(), $count, $attributes);
     }
 
@@ -344,7 +346,7 @@ class LogService implements \App\Contract\CrudServicesInterface
         return EzUpload::uploadToStorage($file, $file->getClientOriginalName(), "/logs");
     }
 
-    public function store($attributes, array $files)
+    public function store($attributes, array $files): RedirectResponse
     {
 
         $validate = $this->validate($attributes);
@@ -420,5 +422,44 @@ class LogService implements \App\Contract\CrudServicesInterface
     public function delete($id): int
     {
         return $this->logRepository->delete($id);
+    }
+
+    public function showLog($id): LogShowViewModel
+    {
+        /**
+         * @var Log $logCollection
+         * @var Collection $students
+         * @var Teacher $teacher
+         * @var Grade $grade
+         * @var Collection $comments
+         */
+        $logCollection = $this->logRepository->show($id);
+        $teacher = $logCollection->Teacher()->first();
+        $students = $logCollection->StudentsObject();
+        $grade = $logCollection->Grade()->first();
+        $comments = $this->commentRepository->getCommentByLogId($id);
+        $relationLogs = [];
+        return new LogShowViewModel(
+            log: new LogShowObject(
+                id: $logCollection['id'],
+                embed: $logCollection->getEmbed(),
+                date: Carbon::parse($logCollection['date'])->isoFormat("DD-MM-YYYY"),
+                time: $logCollection["start"] . "-" . $logCollection["end"],
+                title: $logCollection['lesson'], grade: new LogGradeObject(id: $grade['id'], name: $grade["name"]),
+                teacher: new TeacherLogObject($teacher["id"], $teacher["name"]),
+                students: $students->map(
+                    fn(Student $student) => new StudentLogObject(
+                        id: $student["id"], name: $student['name']
+                    )
+                )->toArray(), assessment: $logCollection['assessment']
+            ), recommendLog: [], comments: $comments->map(
+            fn(Comment $comment) => new LogCommentsObject(
+                id: $comment['id'],
+                username: $comment->User()->first()->name,
+                message: $comment["message"],
+                avatar: $comment->User()->first()->avatar ?? "https://i.pinimg.com/736x/c1/9d/13/c19d1358a9f89027798c326898b22820.jpg"
+            )
+        )->toArray()
+        );
     }
 }

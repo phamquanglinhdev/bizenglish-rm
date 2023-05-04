@@ -35,8 +35,8 @@ class LogListObject
     {
         return [
             'id' => $this->getId(),
-            'grade' => $this->getGrade(),
-            'date' => $this->getDate(),
+            'grade' => DataBroTable::cView("belongTo", ['entry' => 'grades', 'object' => $this->getGrade()]),
+            'date' => DataBroTable::cView("name", ['entry' => 'logs', 'collection' => ['id' => $this->getId(), 'name' => $this->getDate()]]),
             'start' => $this->getStart(),
             'end' => $this->getEnd(),
             'teacher' => DataBroTable::cView("belongTo", ['entry' => 'teachers', 'object' => $this->getTeacher()]),
