@@ -58,9 +58,11 @@ class StudentCrudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id):View
     {
-        //
+        return \view("admin.screens.student_detail", [
+            'studentShowViewModel' => $this->studentService->showStudentProfile($id)
+        ]);
     }
 
     /**

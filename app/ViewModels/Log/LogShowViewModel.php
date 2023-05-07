@@ -25,7 +25,7 @@ class LogShowViewModel
     }
 
     /**
-     * @return array
+     * @return RecommendLogObject[]
      */
     public function getRecommendLog(): array
     {

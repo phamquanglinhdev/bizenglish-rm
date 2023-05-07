@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contract\CrudServicesInterface;
+use App\Models\Log;
 use App\Models\Student;
 use App\Repositories\StaffRepository;
 use App\Repositories\StudentRepository;
@@ -12,14 +13,19 @@ use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Staff\Object\StaffListObject;
 use App\ViewModels\Staff\StaffListViewModel;
 use App\ViewModels\Student\Object\StudentListObject;
+use App\ViewModels\Student\Object\StudentLogsObject;
+use App\ViewModels\Student\Object\StudentShowObject;
 use App\ViewModels\Student\Object\StudentStoreObject;
 use App\ViewModels\Student\StudentListViewModel;
+use App\ViewModels\Student\StudentShowViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Ramsey\Collection\Collection;
 
 class StudentService implements CrudServicesInterface
 {
@@ -341,5 +347,40 @@ class StudentService implements CrudServicesInterface
             return to_route("students.index")->with("success", "Xóa thành công");
         else
             return to_route("students.index")->with("success", "Xóa thất bại");
+    }
+
+    public function showStudentProfile($id): StudentShowViewModel
+    {
+        /**
+         * @var Student $student
+         * @var Collection $logs
+         */
+        $student = $this->studentRepository->show($id);
+        $logs = \Illuminate\Support\Collection::make($student->getLog());
+        return new StudentShowViewModel(
+            student: new StudentShowObject(
+                id: $student["id"],
+                name: $student["name"],
+                code: $student["code"],
+                phone: $student["phone"] ?? "-",
+                parent: $student["student_parent"] ?? "Không",
+                avatar: $student["avatar"] ?? "https://e2.yotools.net/images/user_image/2023/05/6457555910168.jpg",
+                facebook: $student["facebook"],
+                address: $student["address"],
+                email: $student["email"],
+                logCount: $student->getLogCount(),
+                remaining: $student->getRemaining(),
+                minutes: $student->getLogCountMinutes(),
+                status: $student->getStatus(),
+            ), studentLogs: $logs->map(
+            fn(Log $log) => new StudentLogsObject(
+                title: $log["lesson"],
+                id: $log["id"],
+                date: $log["date"],
+                teacher: $log->Teacher()->first(),
+                attachments: json_decode($log["attachments"]),
+                question: $log["question"] ?? "-"
+            )
+        )->toArray(), studentCaringObject: []);
     }
 }

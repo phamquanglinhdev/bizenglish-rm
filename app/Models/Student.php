@@ -49,4 +49,116 @@ class Student extends User
             default => "Không xác định",
         };
     }
+
+    /**
+     * @return Log[]
+     */
+    public function getLog(): array
+    {
+        /**
+         * @var Grade[] $grades
+         * @var Log[] $logs
+         */
+        $result = [];
+        $grades = $this->Grades()->get();
+        foreach ($grades as $grade) {
+            $logs = $grade->Logs()->get();
+            foreach ($logs as $log) {
+                $result[] = $log;
+            }
+        }
+        return $result;
+    }
+
+    public function getLogCount(): int
+    {
+        return count($this->getLog());
+    }
+
+    public function getLogCountMinutes(): int
+    {
+        $result = 0;
+        foreach ($this->getLog() as $log) {
+            $result += $log["duration"];
+        }
+        return $result;
+    }
+
+    public function getRemaining(): int
+    {
+        $remaining = 0;
+        foreach ($this->Grades()->get() as $grade) {
+            $remaining += $grade["minutes"];
+        }
+
+        return ($remaining - $this->getLogCountMinutes()) > 0 ? ($remaining - $this->getLogCountMinutes()) : "0";
+    }
+
+    public function getOwnTime(): array
+    {
+        $daily = [];
+        $grades = $this->Grades()->where("disable", 0)->where("status", 0)->where("time", "!=", null)->get();
+        $index = 0;
+        foreach ($grades as $grade) {
+            $time = $grade->time;
+            foreach ($time as $day) {
+                $daily[$day["day"]][$index]["value"] = $day["value"];
+                $daily[$day["day"]][$index]["grade"] = $grade;
+                $index++;
+            }
+        }
+        return $daily;
+    }
+
+    public function originStaff(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, "staff_id", "id");
+    }
+
+    public function calendar(): \stdClass
+    {
+        $calendar = new \stdClass();
+        $calendar->monday = [];
+        $calendar->tuesday = [];
+        $calendar->wednesday = [];
+        $calendar->thursday = [];
+        $calendar->friday = [];
+        $calendar->saturday = [];
+        $calendar->sunday = [];
+        $grades = $this->Grades()->get();
+        foreach ($grades as $grade) {
+            $times = $grade->time;
+            foreach ($times as $time) {
+                $item = new \stdClass();
+                $item->id = $grade->id;
+                $item->name = $grade->name;
+                $item->value = $time["value"];
+                switch ($time["day"]) {
+                    case "mon":
+                        $calendar->monday[] = $item;
+                        break;
+                    case "tue":
+                        $calendar->tuesday[] = $item;
+                        break;
+                    case "wed":
+                        $calendar->wednesday[] = $item;
+                        break;
+                    case "thu":
+                        $calendar->thursday[] = $item;
+                        break;
+                    case "fri":
+                        $calendar->friday[] = $item;
+                        break;
+                    case "sat":
+                        $calendar->saturday[] = $item;
+                        break;
+                    case "sun":
+                        $calendar->sunday[] = $item;
+                        break;
+                }
+
+            }
+        }
+        return $calendar;
+    }
 }

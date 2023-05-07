@@ -432,13 +432,14 @@ class LogService implements \App\Contract\CrudServicesInterface
          * @var Teacher $teacher
          * @var Grade $grade
          * @var Collection $comments
+         * @var Collection $relationLogs
          */
         $logCollection = $this->logRepository->show($id);
         $teacher = $logCollection->Teacher()->first();
         $students = $logCollection->StudentsObject();
         $grade = $logCollection->Grade()->first();
         $comments = $this->commentRepository->getCommentByLogId($id);
-        $relationLogs = [];
+        $relationLogs = $this->logRepository->getLogByGrade($grade["id"]);
         return new LogShowViewModel(
             log: new LogShowObject(
                 id: $logCollection['id'],
@@ -452,7 +453,14 @@ class LogService implements \App\Contract\CrudServicesInterface
                         id: $student["id"], name: $student['name']
                     )
                 )->toArray(), assessment: $logCollection['assessment']
-            ), recommendLog: [], comments: $comments->map(
+            ), recommendLog: $relationLogs->map(
+            fn(Log $log) => new RecommendLogObject(
+                id: $log["id"],
+                teacher: $log->Teacher()->first(),
+                title: $log["lesson"],
+                date: $log["date"]
+            )
+        )->toArray(), comments: $comments->map(
             fn(Comment $comment) => new LogCommentsObject(
                 id: $comment['id'],
                 username: $comment->User()->first()->name,

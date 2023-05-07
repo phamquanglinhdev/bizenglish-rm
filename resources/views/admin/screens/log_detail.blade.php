@@ -5,6 +5,7 @@
     */
     $log = $logShowViewModel->getLog();
     $comments = $logShowViewModel->getComments();
+    $recommend = $logShowViewModel->getRecommendLog();
 @endphp
 @extends("layouts.app")
 @section("title")
@@ -101,162 +102,34 @@
                 </div>
             </div>
             <div class="col-lg-4 col-12">
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
+                @foreach($recommend as $log)
+                    <div class="recommend row mb-2">
+                        <div class="col-md-6">
+                            <div class="ratio-16x9 ratio">
+                                <a href="{{url("/logs/".$log->getId())}}">
+                                    <img
+                                        src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
+                                        class="w-100">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fw-bold">
+                                <a href="{{url("/logs/".$log->getId())}}" class="text-dark">{{$log->getTitle()}}</a>
+                            </div>
+                            <div class="mt-2">
+                                <i class="bx bxs-check-circle"></i>
+                                <a href="{{url("teachers/".json_decode($log->getTeacher())->id)}}">
+                                    <span class="ml-1 text-secondary">{{json_decode($log->getTeacher())->name}}</span>
+                                </a>
+                            </div>
+                            <div class="mt-2">
+                                <i class="bx bx-alarm"></i>
+                                {{$log->getDate()}}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
-                <div class="recommend row mb-2">
-                    <div class="col-md-6">
-                        <div class="ratio-16x9 ratio">
-                            <a href="#">
-                                <img
-                                    src="https://www.englishexplorer.com.sg/wp-content/uploads/2017/02/english-course.jpg"
-                                    class="w-100">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="fw-bold">
-                            <a href="#" class="text-dark">Video tiêu đề nhỏ nếu mà nó to qua thì sẽ hiển thị ...</a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bxs-check-circle"></i>
-                            <a href="#">
-                                <span class="ml-1 text-secondary">Trần Minh Thu Hạ</span>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <i class="bx bx-alarm"></i>
-                            12-11-2021
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
