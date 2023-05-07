@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Student extends User
 {
@@ -94,20 +95,9 @@ class Student extends User
         return ($remaining - $this->getLogCountMinutes()) > 0 ? ($remaining - $this->getLogCountMinutes()) : "0";
     }
 
-    public function getOwnTime(): array
+    public function getOwnTime(): Collection
     {
-        $daily = [];
-        $grades = $this->Grades()->where("disable", 0)->where("status", 0)->where("time", "!=", null)->get();
-        $index = 0;
-        foreach ($grades as $grade) {
-            $time = $grade->time;
-            foreach ($time as $day) {
-                $daily[$day["day"]][$index]["value"] = $day["value"];
-                $daily[$day["day"]][$index]["grade"] = $grade;
-                $index++;
-            }
-        }
-        return $daily;
+        return $this->Grades()->where("disable", 0)->where("status", 0)->where("time", "!=", null)->get();
     }
 
     public function originStaff(): BelongsTo
@@ -125,7 +115,7 @@ class Student extends User
         $calendar->friday = [];
         $calendar->saturday = [];
         $calendar->sunday = [];
-        $grades = $this->Grades()->get();
+
         foreach ($grades as $grade) {
             $times = $grade->time;
             foreach ($times as $time) {

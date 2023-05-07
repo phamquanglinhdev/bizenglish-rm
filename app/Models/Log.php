@@ -128,6 +128,6 @@ class Log extends Model
             $link = str_replace("/edit", "/preview", $this->drive);
             return str_replace("/view", "/preview", $link);
         }
-        return "-";
+        return "https://www.youtube.com/embed/AjWfY7SnMB";
     }
 }

@@ -9,9 +9,8 @@ use App\Repositories\StaffRepository;
 use App\Repositories\StudentRepository;
 use App\Untils\DataBroTable;
 use App\Untils\EzUpload;
+use App\ViewModels\Common\CalendarObject;
 use App\ViewModels\Entry\CrudEntry;
-use App\ViewModels\Staff\Object\StaffListObject;
-use App\ViewModels\Staff\StaffListViewModel;
 use App\ViewModels\Student\Object\StudentListObject;
 use App\ViewModels\Student\Object\StudentLogsObject;
 use App\ViewModels\Student\Object\StudentShowObject;
@@ -364,7 +363,7 @@ class StudentService implements CrudServicesInterface
                 code: $student["code"],
                 phone: $student["phone"] ?? "-",
                 parent: $student["student_parent"] ?? "Không",
-                avatar: $student["avatar"] ?? "https://e2.yotools.net/images/user_image/2023/05/6457555910168.jpg",
+                avatar: $student["avatar"] ?? config("app.blank_avatar"),
                 facebook: $student["facebook"],
                 address: $student["address"],
                 email: $student["email"],
@@ -381,6 +380,8 @@ class StudentService implements CrudServicesInterface
                 attachments: json_decode($log["attachments"]),
                 question: $log["question"] ?? "-"
             )
-        )->toArray(), studentCaringObject: []);
+        )->toArray(),
+            studentCaringObject: [],
+            calendarObject: new CalendarObject($student->getOwnTime()));
     }
 }

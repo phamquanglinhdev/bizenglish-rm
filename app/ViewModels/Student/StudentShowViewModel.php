@@ -2,7 +2,8 @@
 
 namespace App\ViewModels\Student;
 
-use App\ViewModels\Student\Object\StudentCasingsObject;
+use App\ViewModels\Common\CalendarObject;
+use App\ViewModels\Student\Object\StudentCaringsObject;
 use App\ViewModels\Student\Object\StudentLogsObject;
 use App\ViewModels\Student\Object\StudentShowObject;
 
@@ -12,8 +13,17 @@ class StudentShowViewModel
         private readonly StudentShowObject $student,
         private readonly array             $studentLogs,
         private readonly array             $studentCaringObject,
+        private readonly CalendarObject    $calendarObject,
     )
     {
+    }
+
+    /**
+     * @return CalendarObject
+     */
+    public function getCalendarObject(): CalendarObject
+    {
+        return $this->calendarObject;
     }
 
     /**
@@ -33,7 +43,7 @@ class StudentShowViewModel
     }
 
     /**
-     * @return StudentCasingsObject[]
+     * @return StudentCaringsObject[]
      */
     public function getStudentCaringObject(): array
     {

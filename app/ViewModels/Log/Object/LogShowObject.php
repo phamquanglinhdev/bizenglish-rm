@@ -13,7 +13,7 @@ class LogShowObject
         private readonly LogGradeObject   $grade,
         private readonly TeacherLogObject $teacher,
         private readonly ?array           $students,
-        private readonly string           $assessment,
+        private readonly ?string           $assessment,
     )
     {
     }
@@ -83,9 +83,9 @@ class LogShowObject
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getAssessment(): string
+    public function getAssessment(): ?string
     {
         return $this->assessment;
     }

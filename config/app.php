@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,7 +58,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
-
+    'blank_avatar' => "https://scontent.fhan2-4.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=7206a8&_nc_ohc=iyixs2h8VAgAX9y0a-P&_nc_ht=scontent.fhan2-4.fna&oh=00_AfCbAfXCHHDJJIE1VWf2pkmL27NPf7T1u51aGVSbOvePaQ&oe=647ED878",
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

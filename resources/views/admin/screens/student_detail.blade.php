@@ -5,6 +5,7 @@
     */
     $studentObject  =  $studentShowViewModel->getStudent();
     $logs = $studentShowViewModel->getStudentLogs();
+    $calendar  = $studentShowViewModel->getCalendarObject();
 @endphp
 @extends("layouts.app")
 @section("title")
@@ -54,7 +55,6 @@
     </style>
 @endpush
 @section("content")
-
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="py-3 breadcrumb-wrapper mb-4">
             <span class="text-muted fw-light">Học sinh /</span> {{$studentObject->getName()}}
@@ -88,9 +88,9 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <a href="javascript:void(0)" class="btn btn-primary text-nowrap">
-                                    <i class='bx bx-user-check me-1'></i>Connected
-                                </a>
+                                {{--                                <a href="javascript:void(0)" class="btn btn-primary text-nowrap">--}}
+                                {{--                                    <i class='bx bx-user-check me-1'></i>Connected--}}
+                                {{--                                </a>--}}
                             </div>
                         </div>
                     </div>
@@ -98,23 +98,6 @@
             </div>
         </div>
         <!--/ Header -->
-
-        <!-- Navbar pills -->
-        {{--        <div class="row">--}}
-        {{--            <div class="col-md-12">--}}
-        {{--                <ul class="nav nav-pills flex-column flex-sm-row mb-4">--}}
-        {{--                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);"><i--}}
-        {{--                                class='bx bx-user me-1'></i> Profile</a></li>--}}
-        {{--                    <li class="nav-item"><a class="nav-link" href="pages-profile-teams.html"><i--}}
-        {{--                                class='bx bx-group me-1'></i> Teams</a></li>--}}
-        {{--                    <li class="nav-item"><a class="nav-link" href="pages-profile-projects.html"><i--}}
-        {{--                                class='bx bx-grid-alt me-1'></i> Projects</a></li>--}}
-        {{--                    <li class="nav-item"><a class="nav-link" href="pages-profile-connections.html"><i--}}
-        {{--                                class='bx bx-link-alt me-1'></i> Connections</a></li>--}}
-        {{--                </ul>--}}
-        {{--            </div>--}}
-        {{--        </div>--}}
-        <!--/ Navbar pills -->
 
         <!-- User Profile Content -->
         <div class="row">
@@ -187,6 +170,112 @@
             <div class="col-xl-8 col-lg-7 col-md-7">
                 <div class="card card-action mb-4">
                     <div class="card-header align-items-center">
+                        <h5 class="card-action-title mb-0"><i class='bx bx-calendar bx-sm me-2'></i>Lịch học
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if(!empty($calendar->getMonday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ hai</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getMonday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getTuesday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ ba</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getTuesday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getWednesday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ tư</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getWednesday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getThursday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ năm</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getThursday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getFriday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ sáu</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getFriday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getSaturday()))
+                            <div class="day">
+                                <div class="fw-bold">Thứ bảy</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getSaturday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(!empty($calendar->getSunday()))
+                            <div class="day">
+                                <div class="fw-bold">Chủ nhật</div>
+                                <ul class="list-group list-group-timeline">
+                                    @foreach($calendar->getSunday() as $time)
+                                        <li class="list-group-item list-group-timeline-danger">
+                                            <a class="fw-bold"
+                                               href="{{url("/grades/".$time->getId())}}">{{$time->getGrade()}}</a>
+                                            : {{$time->getTime()}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="card card-action mb-4">
+                    <div class="card-header align-items-center">
                         <h5 class="card-action-title mb-0"><i class='bx bx-list-ul bx-sm me-2'></i>Nhật ký buổi học
                         </h5>
                         <div class="card-action-element btn-pinned">
@@ -208,13 +297,14 @@
                                     <div class="timeline-event">
                                         <div class="timeline-header mb-1">
                                             <h5 class="mb-0 fw-bold">
-                                                <a href="{{url("/logs/".$log->getId())}}" class="text-dark">{{$log->getTitle()}}</a>
+                                                <a href="{{url("/logs/".$log->getId())}}"
+                                                   class="text-dark">{{$log->getTitle()}}</a>
                                             </h5>
                                             <small class="text-muted">{{$log->getDate()}}</small>
                                         </div>
                                         <a href="{{url("/teachers/".$log->getTeacher()->getId())}}" class="mb-2">Upload
                                             by {{$log->getTeacher()->getName()}}
-                                            <img src="{{asset($log->getTeacher()->getAvatar())}}"
+                                            <img src="{{$log->getTeacher()->getAvatar()}}"
                                                  class="rounded-circle ms-3" alt="avatar"
                                                  height="20" width="20"></a>
                                         <div>Bài tập : {{$log->getQuestion()}}</div>
