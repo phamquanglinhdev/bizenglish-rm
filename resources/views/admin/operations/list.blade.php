@@ -20,7 +20,10 @@
     <link rel="stylesheet" href="{{asset("vendor/libs/datatables-bs5/datatables.bootstrap5.css")}}">
     <link rel="stylesheet" href="{{asset("vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css")}}">
     <link rel="stylesheet" href="{{asset("vendor/libs/flatpickr/flatpickr.css")}}"/>
+    <link rel="stylesheet" href="{{asset("vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css")}}"/>
+    <link rel="stylesheet" href="{{asset("vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css")}}"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.2.2/css/fixedColumns.dataTables.min.css"/>
+
     <link rel="stylesheet" href="{{asset("vendor/libs/typeahead-js/typeahead.css")}}"/>
     <style>
         .dataTables_wrapper .dataTables_processing {
@@ -102,7 +105,10 @@
     <!-- Flat Picker -->
     <script src="{{asset("vendor/libs/moment/moment.js")}}"></script>
     <script src="{{asset("vendor/libs/flatpickr/flatpickr.js")}}"></script>
+    <script src="{{asset("vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js")}}"></script>
+    <script src="{{asset("vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js")}}"></script>
     <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
+
     <!-- Page JS -->
     <script>
         $(document).ready(function () {

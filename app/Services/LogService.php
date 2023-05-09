@@ -42,9 +42,7 @@ class LogService implements \App\Contract\CrudServicesInterface
     public function __construct(
         private readonly GradeRepository   $gradeRepository,
         private readonly LogRepository     $logRepository,
-        private readonly StudentRepository $studentRepository,
         private readonly TeacherRepository $teacherRepository,
-        private readonly ClientRepository  $clientRepository,
         private readonly CommentRepository $commentRepository,
     )
     {
@@ -81,10 +79,10 @@ class LogService implements \App\Contract\CrudServicesInterface
     {
         return [
             [
-                'name' => 'date',
-                'label' => 'Ngày',
-                'type' => 'date',
-                'value' => $old['date'] ?? null,
+                'name' => 'grade',
+                'label' => 'Lớp',
+                'type' => 'text',
+                'value' => $old['grade'] ?? null,
             ],
             [
                 'name' => 'student',
@@ -122,7 +120,14 @@ class LogService implements \App\Contract\CrudServicesInterface
                     2 => 'Giáo viên muộn',
                     3 => 'Học sinh hủy buổi học',
                     4 => 'Giáo viên hủy buổi học',
-                ]
+                ],
+
+            ],
+            [
+                'name' => 'date',
+                'label' => 'Ngày',
+                'type' => 'date-range',
+                'value' => $old['date'] ?? null,
             ],
 
         ];
