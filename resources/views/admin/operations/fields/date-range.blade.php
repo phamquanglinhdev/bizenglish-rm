@@ -10,7 +10,9 @@
                 showDropdowns: !0,
                 opens: isRtl ? "left" : "right",
                 cancelLabel: 'Clear',
-                format: 'dd/mm/yy'
+                locale: {
+                    format: 'DD/M/YYYY'
+                }
             })
             @if($field['value'])
             $("#{{$field["name"]}}").val('{{$field['value']}}')
