@@ -27,6 +27,10 @@
             background: none;
             border: none;
         }
+
+        .dtfc-right-top-blocker {
+            background: #5a8dee!important;
+        }
     </style>
 @endpush
 @push("offcanvas")

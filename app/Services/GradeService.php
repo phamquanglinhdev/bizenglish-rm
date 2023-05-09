@@ -76,6 +76,18 @@ class GradeService implements CrudServicesInterface
                 'value' => $old['name'] ?? null,
             ],
             [
+                'name' => 'staffs',
+                'label' => 'Nhân viên',
+                'type' => 'text',
+                'value' => $old['staffs'] ?? null,
+            ],
+            [
+                'name' => 'supporters',
+                'label' => 'Nhân viên hỗ trợ',
+                'type' => 'text',
+                'value' => $old['supporters'] ?? null,
+            ],
+            [
                 'name' => 'students',
                 'label' => 'Học sinh',
                 'type' => 'text',
@@ -86,14 +98,45 @@ class GradeService implements CrudServicesInterface
                 'label' => 'Giáo viên',
                 'type' => 'text',
                 'value' => $old['teachers'] ?? null,
-            ]
+            ],
+            [
+                'name' => 'clients',
+                'label' => 'Đối tác',
+                'type' => 'text',
+                'value' => $old['clients'] ?? null,
+            ],
+            [
+                'name' => 'status',
+                'label' => 'Trạng thái lớp',
+                'type' => 'select2',
+                'options' => [
+                    0 => 'Đang học',
+                    2 => 'Đang bảo lưu'
+                ],
+                'nullable' => true,
+                'value' => $old['status'] ?? null,
+            ],
+            [
+                'name' => 'remaining',
+                'label' => 'Số phút còn lại',
+                'type' => 'select2',
+                'options' => [
+                    0 => 'Trên 90',
+                    1 => 'Dưới 90 phút',
+                    2 => 'Đã quá hạn'
+                ],
+                'nullable' => true,
+                'value' => $old['remaining'] ?? null,
+            ],
+
         ];
     }
 
     /**
-     * @return mixed
+     * @param Grade|null $old
+     * @return CrudEntry
      */
-    public function setupCreateOperation(Grade $old = null)
+    public function setupCreateOperation(Grade $old = null): CrudEntry
     {
         $entry = new CrudEntry("grades", $old->id ?? null, "Lớp học");
         $entry->addField([
@@ -235,10 +278,14 @@ class GradeService implements CrudServicesInterface
     }
 
     /**
-     * @return mixed
+     * @param $id
+     * @return CrudEntry
      */
-    public function setupEditOperation($id)
+    public function setupEditOperation($id): CrudEntry
     {
+        /**
+         * @var Grade $grade
+         */
         $grade = $this->gradeRepository->show($id);
         return $this->setupCreateOperation($grade);
     }
@@ -290,28 +337,12 @@ class GradeService implements CrudServicesInterface
                     link: $grade['zoom'] ?? "-",
                     pricing: $grade["pricing"],
                     minutes: $grade["minutes"] ?? 0,
-                    remaining: 0,
+                    remaining: $grade->minutes - $grade->Logs()->sum("duration"),
                     attachment: $grade['attachment'] ?? "-",
                     status: $grade->getStatus(),
                     created_at: $grade['created_at'],
                 ))->toArray()
             )->toArray(), label: "Lớp học");
-//        dd($gradesViewModel->getGrades());
-//        return DataTables::collection($gradesViewModel->getGrades())
-//            ->addColumn("action", function ($grade) {
-//                return view("admin.operations.columns.actions", ['entry' => 'grades', 'id' => $grade['id']]);
-//            })
-//            ->addColumn("name", function ($grade) {
-//                return view("admin.operations.columns.name", ['entry' => 'grades', 'collection' => $grade]);
-//            })
-//            ->addColumn("link", function ($grade) {
-//                return view("admin.operations.columns.link", ['link' => $grade["link"]]);
-//            })
-//            ->addColumn("attachment", function ($grade) {
-//                return view("admin.operations.columns.link", ['link' => $grade["attachment"]]);
-//            })
-//            ->rawColumns(["action", "name", "link"])
-//            ->toJson();
         return DataBroTable::collect($gradesViewModel->getGrades(), $count, $attributes);
     }
 
