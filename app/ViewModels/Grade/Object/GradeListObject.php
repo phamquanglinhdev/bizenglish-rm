@@ -148,7 +148,7 @@ class GradeListObject
             'staffs' => $this->getStaffs(),
             'supporters' => $this->getSupporters(),
             'clients' => $this->getClients(),
-            'link' => $this->getLink(),
+            'link' => DataBroTable::cView("link", ["link" => $this->getLink()]),
             'pricing' => number_format($this->getPricing()),
             'minutes' => number_format($this->getMinutes()),
             'remaining' => number_format($this->getRemaining()),
