@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -50,10 +51,10 @@ class Log extends Model
 
     public function Students(): array
     {
-        return $this->Grade()->first()->students()->get()->pluck('name', "id")->toArray();
+        return $this->Grade()->first()->Students()->get()->pluck('name', "id")->toArray();
     }
 
-    public function StudentsObject(): \Illuminate\Support\Collection
+    public function StudentsObject(): Collection
     {
         return $this->Grade()->first()->Students()->get();
     }

@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
     public function __construct(
-        private UserRepository $userRepository
+        private readonly UserRepository $userRepository
     )
     {
     }
 
-    public function authenticate($attributes): \Illuminate\Http\RedirectResponse
+    public function authenticate($attributes): RedirectResponse
     {
         $user = $this->userRepository->findByEmail($attributes['email']);
         if (!isset($user->id)) {

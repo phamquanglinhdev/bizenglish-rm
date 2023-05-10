@@ -4,6 +4,7 @@ namespace App\ViewModels\Grade\Object;
 
 use App\Untils\DataBroTable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class GradeListObject
 {
@@ -143,8 +144,8 @@ class GradeListObject
         return Collection::make([
             'id' => $this->getId(),
             'name' => DataBroTable::cView("name", ['entry' => 'grades', 'collection' => ['name' => $this->getName(), 'id' => $this->getId()]]),
-            'students' => $this->getStudents(),
-            'teachers' => $this->getTeachers(),
+            'students' => DataBroTable::cView("text", ["text" => $this->getStudents(), "limit" => 20]),
+            'teachers' => DataBroTable::cView("text", ["text" => $this->getTeachers(), "limit" => 20]),
             'staffs' => $this->getStaffs(),
             'supporters' => $this->getSupporters(),
             'clients' => $this->getClients(),
