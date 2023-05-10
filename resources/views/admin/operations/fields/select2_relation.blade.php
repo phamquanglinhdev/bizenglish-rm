@@ -25,5 +25,16 @@
 </div>
 @push("page_js")
     <script src="{{asset("vendor/libs/select2/select2.js")}}"></script>
-    <script src="{{asset("js/forms-selects.js")}}"></script>
+    {{--    <script src="{{asset("js/forms-selects.js")}}"></script>--}}
+    <script>
+        t = $("#{{$field["name"]}}")
+        t.each(function () {
+            const e = $(this);
+            e.wrap('<div class="position-relative"></div>').select2({
+                placeholder: "Select value",
+                disabled: {{isset($field["disable"])?"true":"false"}},
+                dropdownParent: e.parent()
+            })
+        })
+    </script>
 @endpush

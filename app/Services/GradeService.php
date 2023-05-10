@@ -167,14 +167,26 @@ class GradeService implements CrudServicesInterface
             'value' => $old["minutes"] ?? null,
             'type' => 'numbers',
         ]);
-        $entry->addField([
-            'name' => "staffs",
-            'label' => 'Nhân viên',
-            'class' => 'col-md-6',
-            'type' => 'select2_relation',
-            'value' => $old?->Staffs()->allRelatedIds()->toArray(),
-            'options' => $this->staffRepository->getForSelect()
-        ]);
+        if (principal()->getType() == 0) {
+            $entry->addField([
+                'name' => "staffs",
+                'label' => 'Nhân viên',
+                'class' => 'col-md-6',
+                'type' => 'select2_relation',
+                'value' => [principal()->getId()],
+                'options' => $this->staffRepository->getForSelect(),
+                'disable' => true,
+            ]);
+        } else {
+            $entry->addField([
+                'name' => "staffs",
+                'label' => 'Nhân viên',
+                'class' => 'col-md-6',
+                'type' => 'select2_relation',
+                'value' => $old?->Staffs()->allRelatedIds()->toArray(),
+                'options' => $this->staffRepository->getForSelect()
+            ]);
+        }
         $entry->addField([
             'name' => "supporters",
             'label' => 'Nhân viên hỗ trợ',
@@ -292,6 +304,7 @@ class GradeService implements CrudServicesInterface
 
     public function validate($attributes): \Illuminate\Validation\Validator
     {
+
         return Validator::make($attributes, [
             'name' => 'required',
             'pricing' => 'numeric|required|min:0',
@@ -348,6 +361,9 @@ class GradeService implements CrudServicesInterface
 
     public function store($attributes): RedirectResponse
     {
+        if (principal()->getType() == 0) {
+            $attributes["staffs"] = [principal()->getId()];
+        }
         $validate = $this->validate($attributes);
         if ($validate->fails()) {
             return redirect()->back()->withInput($attributes)->withErrors($validate->errors());
@@ -369,6 +385,9 @@ class GradeService implements CrudServicesInterface
 
     public function update($attributes, $id)
     {
+        if (principal()->getType() == 0) {
+            $attributes["staffs"] = [principal()->getId()];
+        }
         $old = $this->gradeRepository->show($id);
         if (!isset($old->id)) {
             return to_route("grade.index");
