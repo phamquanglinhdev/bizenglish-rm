@@ -34,6 +34,9 @@
         .dtfc-right-top-blocker {
             background: #5a8dee!important;
         }
+        .dtfc-fixed-left {
+            border-right: 2px solid!important;
+        }
     </style>
 @endpush
 @push("offcanvas")
