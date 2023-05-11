@@ -22,15 +22,6 @@ class GradeRepository extends CrudRepository
      */
     public function filter(Builder $query, array $attributes): Builder
     {
-        if (principal()->getType() == 0) {
-            $query->where(function (Builder $grade) {
-                $grade->whereHas("staffs", function (Builder $staffs) {
-                    $staffs->where("id", principal()->getId());
-                })->orWhereHas("supporters", function (Builder $supporters) {
-                    $supporters->where("id", principal()->getId());
-                });
-            });
-        }
         if (isset($attributes['name'])) {
             $value = $attributes["name"];
             $query->where("name", "like", "%$value%");

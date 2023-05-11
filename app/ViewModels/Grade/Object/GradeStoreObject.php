@@ -11,10 +11,19 @@ class GradeStoreObject
         private readonly int     $minutes,
         private readonly int     $status,
         private readonly ?string $time,
+        private readonly ?int    $lessons,
         private readonly ?string $information,
         private readonly ?string $attachment,
     )
     {
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLessons(): ?int
+    {
+        return $this->lessons;
     }
 
     /**
@@ -92,6 +101,7 @@ class GradeStoreObject
             'time' => $this->getTime(),
             'information' => $this->getInformation(),
             'attachment' => $this->getAttachment(),
+            'lessons' => $this->getLessons()
         ];
     }
 }

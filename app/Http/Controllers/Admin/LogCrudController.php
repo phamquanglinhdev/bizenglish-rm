@@ -35,6 +35,7 @@ class LogCrudController extends Controller
             'columns' => $this->logService->setupListOperation(),
             'filters' => $this->logService->setupFilterOperation($request->input()),
             'leftFix' => 2,
+            'setup' => $this->logService->setup()->getSetup()
         ]);
     }
 

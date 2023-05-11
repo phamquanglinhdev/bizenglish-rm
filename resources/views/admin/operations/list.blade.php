@@ -4,11 +4,12 @@
  * @var $columns
  * @var $filters
  * @var $leftFix
+ * @var array|null $setup
  **/
     use \Illuminate\Support\Facades\Route;
     use Illuminate\Support\Facades\Request;
     $currentRoute = \route(Route::current()->getName());
-    $request = Request::input()
+    $request = Request::input();
 @endphp
 @section("title")
     Bizenglish::{{$label}}
@@ -32,10 +33,11 @@
         }
 
         .dtfc-right-top-blocker {
-            background: #5a8dee!important;
+            background: #5a8dee !important;
         }
+
         .dtfc-fixed-left {
-            border-right: 2px solid!important;
+            border-right: 2px solid !important;
         }
     </style>
 @endpush
@@ -70,9 +72,11 @@
         <div class="h2 p-2"><b>{{$label}}</b>
         </div>
         <div class="mx-2">
-            <a class="btn btn-primary text-uppercase" href="{{$currentRoute."/create"}}">
-                <i class='bx bxs-plus-circle'></i>
-            </a>
+            @if(!isset($setup["denyCreate"]))
+                <a class="btn btn-primary text-uppercase" href="{{$currentRoute."/create"}}">
+                    <i class='bx bxs-plus-circle'></i>
+                </a>
+            @endif
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filter"
                     aria-controls="filter"><i class='bx bx-filter'></i>
             </button>
@@ -86,7 +90,9 @@
                     @foreach($columns as $key => $labelName)
                         <td class="bg-primary text-white">{{$labelName}}</td>
                     @endforeach
-                    <td class="bg-primary text-white">Hành động</td>
+                    @if(!isset($setup["denyAction"]))
+                        <td class="bg-primary text-white">Hành động</td>
+                    @endif
                 </tr>
                 </thead>
                 <tfoot>
@@ -94,7 +100,9 @@
                     @foreach($columns as $key => $labelName)
                         <td class="bg-primary text-white">{{$labelName}}</td>
                     @endforeach
-                    <td class="bg-primary text-white">Hành động</td>
+                    @if(!isset($setup["denyAction"]))
+                        <td class="bg-primary text-white">Hành động</td>
+                    @endif
                 </tr>
                 </tfoot>
             </table>
@@ -122,7 +130,9 @@
                 const item = {data: key, label: value}
                 columns.push(item)
             })
+            @if(!isset($setup["denyAction"]))
             columns.push({data: "action", label: "Hành động"})
+            @endif
             $(".datatables-ajax").DataTable({
                 ajax: {
                     url: '{{$currentRoute}}',
@@ -141,7 +151,7 @@
                 searching: false,
                 sorting: false,
                 scrollCollapse: true,
-                lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]]
             })
 
             $(document).ajaxComplete(function () {

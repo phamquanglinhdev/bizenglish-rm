@@ -36,6 +36,7 @@ class GradeCrudController extends Controller
             'label' => 'Lớp học',
             'columns' => $this->gradeService->setupListOperation(),
             'filters' => $this->gradeService->setupFilterOperation($request->input()),
+            'setup'=>$this->gradeService->setup()->getSetup(),
         ]);
     }
 
@@ -52,7 +53,7 @@ class GradeCrudController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         return $this->gradeService->store($request->input());
     }

@@ -16,6 +16,7 @@ use App\Repositories\TeacherRepository;
 use App\Untils\DataBroTable;
 use App\Untils\EzUpload;
 use App\ViewModels\Entry\CrudEntry;
+use App\ViewModels\Entry\SetupEntry;
 use App\ViewModels\Log\LogListViewModel;
 use App\ViewModels\Log\LogShowViewModel;
 use App\ViewModels\Log\Object\LogCommentsObject;
@@ -48,11 +49,21 @@ class LogService implements \App\Contract\CrudServicesInterface
     {
     }
 
+    public function setup(): SetupEntry
+    {
+        $entry = new SetupEntry();
+        if (principal()->getType() > 1) {
+            $entry->addConfig("denyCreate", true);
+            $entry->addConfig("denyAction", true);
+        }
+        return $entry;
+    }
+
     public
     function setupListOperation(): array
     {
         // TODO: Implement setupListOperation() method.
-        return [
+        $list = [
             'grade' => 'Lớp',
             'date' => 'Ngày',
             'start' => 'Bắt đầu',
@@ -72,6 +83,11 @@ class LogService implements \App\Contract\CrudServicesInterface
             'attachments' => 'Đính kèm',
             'confirm' => 'HS Xác nhận',
         ];
+        if (principal()->getType() > 1) {
+            unset($list["hour_salary"]);
+            unset($list["log_salary"]);
+        }
+        return $list;
     }
 
     public
@@ -356,8 +372,16 @@ class LogService implements \App\Contract\CrudServicesInterface
 
         $validate = $this->validate($attributes);
         if ($validate->fails()) {
-
             return redirect()->back()->withErrors($validate->errors());
+        }
+        if (principal()->getType() == 1) {
+            /**
+             * @var Grade $grade
+             */
+            $grade = $this->gradeRepository->show($attributes["grade_id"]);
+            if (($attributes["duration"] + 5) > $grade->limitMinutes() && $grade->limitMinutes() > 0) {
+                return redirect()->back()->withErrors(["duration" => "Quá thời gian của buổi học"]);
+            }
         }
         $attributes['attachments'] = [];
         if (count($files) > 0) {
@@ -390,9 +414,20 @@ class LogService implements \App\Contract\CrudServicesInterface
 
     public function update(array $attributes, array $files, string $id): RedirectResponse
     {
+        /**
+         * @var Grade $grade
+         */
+        $grade = $this->gradeRepository->show($attributes["grade_id"]);
         $validate = $this->validate($attributes);
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate->errors());
+        }
+        if (principal()->getType() == 1) {
+            if ($grade->limitMinutes()) {
+                if (($attributes["duration"] - 5) > $grade->limitMinutes()) {
+                    return redirect()->back()->withErrors(["duration" => "Quá thời gian của buổi học"]);
+                }
+            }
         }
         if (count($files) > 0) {
             $attributes['attachments'] = [];
@@ -402,7 +437,11 @@ class LogService implements \App\Contract\CrudServicesInterface
         } else {
             $attributes['attachments'] = json_decode($attributes['attachments-old']);
         }
-        $this->logRepository->update((new LogStoreObject(
+        /**
+         * @var Log $logModel
+         */
+        $logModel = $this->logRepository->show($id);
+        $logModel->update((new LogStoreObject(
             grade_id: $attributes['grade_id'],
             teacher_id: $attributes['teacher_id'],
             date: $attributes['date'],
@@ -418,8 +457,8 @@ class LogService implements \App\Contract\CrudServicesInterface
             status: json_encode($attributes['status']),
             assessment: $attributes['assessment'],
             question: $attributes['question'],
-            attachments: $attributes['attachments'][0] ? json_encode($attributes['attachments']) : null
-        ))->toArray(), $id);
+            attachments: isset($attributes['attachments'][0]) ? json_encode($attributes['attachments']) : $logModel->attachments ?? []
+        ))->toArray());
         return to_route('logs.index')->with("success", "Cập nhập thành công");
 
     }

@@ -14,6 +14,7 @@ use App\Repositories\SupporterRepository;
 use App\Repositories\TeacherRepository;
 use App\Untils\DataBroTable;
 use App\ViewModels\Entry\CrudEntry;
+use App\ViewModels\Entry\SetupEntry;
 use App\ViewModels\Grade\GradeListViewModel;
 use App\ViewModels\Grade\GradeShowViewModel;
 use App\ViewModels\Grade\Object\GradeListObject;
@@ -45,6 +46,13 @@ class GradeService implements CrudServicesInterface
         private readonly MenuRepository      $menuRepository,
     )
     {
+    }
+
+    public function setup(): SetupEntry
+    {
+        $entry = new SetupEntry();
+        $entry->addConfig("denyCreate", true);
+        return $entry;
     }
 
     public function setupListOperation(): array
@@ -237,6 +245,20 @@ class GradeService implements CrudServicesInterface
             ]
         ]);
         $entry->addField([
+            'name' => 'attachment',
+            'type' => 'text',
+            'label' => 'Tài liệu',
+            'value' => $old['attachment'] ?? null,
+            'class' => 'col-md-6',
+        ]);
+        $entry->addField([
+            'name' => 'lessons',
+            'type' => 'numbers',
+            'label' => 'Số buổi học',
+            'value' => $old['lessons'] ?? null,
+            'class' => 'col-md-6',
+        ]);
+        $entry->addField([
             'name' => "time",
             'label' => 'Lịch học',
             'color' => 'dark',
@@ -272,12 +294,7 @@ class GradeService implements CrudServicesInterface
             'type' => 'textarea',
             'label' => 'Thông tin chi tiết'
         ]);
-        $entry->addField([
-            'name' => 'attachment',
-            'type' => 'text',
-            'label' => 'Tài liệu',
-            'value' => $old['attachment'] ?? null,
-        ]);
+
         $entry->addField([
             'name' => 'menus',
             'type' => 'select2_relation',
@@ -375,6 +392,7 @@ class GradeService implements CrudServicesInterface
             minutes: $attributes['minutes'],
             status: $attributes['status'],
             time: json_encode($attributes['time']),
+            lessons: $attributes["lessons"],
             information: $attributes['information'],
             attachment: $attributes['attachment'],
         );
@@ -403,6 +421,7 @@ class GradeService implements CrudServicesInterface
             minutes: $attributes['minutes'],
             status: $attributes['status'],
             time: json_encode($attributes['time']),
+            lessons: $attributes["lessons"],
             information: $attributes['information'],
             attachment: $attributes['attachment'],
         );
