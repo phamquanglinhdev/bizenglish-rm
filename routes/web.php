@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ClientCrudController;
 use App\Http\Controllers\Admin\CustomerCrudController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GradeCrudController;
 use App\Http\Controllers\Admin\LogCrudController;
 use App\Http\Controllers\Admin\PartnerCrudController;
@@ -24,9 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth')->prefix("/")->group(function () {
-    Route::get("/", function () {
-        return view("layouts.app");
-    })->name("index");
+    Route::get("/", [DashboardController::class,"index"])->name("index");
     Route::resource("grades", GradeCrudController::class);
     Route::resource("logs", LogCrudController::class);
     Route::resource("staffs", StaffCrudController::class);

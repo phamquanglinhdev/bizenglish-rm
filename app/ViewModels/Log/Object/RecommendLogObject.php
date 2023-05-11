@@ -6,7 +6,7 @@ class RecommendLogObject
 {
     public function __construct(
         private readonly string $id,
-        private readonly string $teacher,
+        private readonly ?string $teacher,
         private readonly string $title,
         private readonly string $date,
     )
@@ -22,11 +22,11 @@ class RecommendLogObject
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTeacher(): string
+    public function getTeacher(): ?string
     {
-        return $this->teacher;
+        return $this->teacher??null;
     }
 
     /**

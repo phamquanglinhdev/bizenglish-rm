@@ -175,7 +175,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                 'label' => 'Giáo viên',
                 'value' => $old["teacher_id"] ?? null,
                 'type' => 'select2',
-                'options' => [principal()->getId()=>principal()->getName()],
+                'options' => [principal()->getId() => principal()->getName()],
             ]);
         }
         $entry->addField([
@@ -498,7 +498,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                 date: Carbon::parse($logCollection['date'])->isoFormat("DD-MM-YYYY"),
                 time: $logCollection["start"] . "-" . $logCollection["end"],
                 title: $logCollection['lesson'], grade: new LogGradeObject(id: $grade['id'], name: $grade["name"]),
-                teacher: new TeacherLogObject($teacher["id"], $teacher["name"]),
+                teacher: $logCollection->Teacher()->first(),
                 students: $students->map(
                     fn(Student $student) => new StudentLogObject(
                         id: $student["id"], name: $student['name']

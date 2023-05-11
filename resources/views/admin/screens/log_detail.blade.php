@@ -46,11 +46,13 @@
                         </div>
                         <div class="d-flex mb-2">
                             <i class="bx bx-user"></i>
-                            <span class="px-1">Giáo viên :
+                            @if($log->getTeacher())
+                                <span class="px-1">Giáo viên :
                                 <a href="{{url("teachers/".$log->getTeacher()->getId())}}">
                                     {{$log->getTeacher()->getName()}}
                                 </a>
                             </span>
+                            @endif
                         </div>
                         <div class="d-flex mb-2">
                             <i class="bx bx-user"></i> <span class="px-1">Học viên :
@@ -119,9 +121,12 @@
                             </div>
                             <div class="mt-2">
                                 <i class="bx bxs-check-circle"></i>
-                                <a href="{{url("teachers/".json_decode($log->getTeacher())->id)}}">
-                                    <span class="ml-1 text-secondary">{{json_decode($log->getTeacher())->name}}</span>
-                                </a>
+                                @if($log->getTeacher())
+                                    <a href="{{url("teachers/".json_decode($log->getTeacher())->id)}}">
+                                        <span
+                                            class="ml-1 text-secondary">{{json_decode($log->getTeacher())->name}}</span>
+                                    </a>
+                                @endif
                             </div>
                             <div class="mt-2">
                                 <i class="bx bx-alarm"></i>

@@ -2,24 +2,34 @@
 
 namespace App\Services;
 
+use App\Models\Grade;
+use App\Models\Log;
 use App\Models\Staff;
+use App\Models\Teacher;
+use App\Repositories\LogRepository;
 use App\Repositories\StaffRepository;
 use App\Repositories\StudentRepository;
 use App\Untils\DataBroTable;
+use App\ViewModels\Common\UserRelationObject;
 use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Staff\Object\StaffListObject;
+use App\ViewModels\Staff\Object\StaffLogsObject;
+use App\ViewModels\Staff\Object\StaffShowObject;
 use App\ViewModels\Staff\Object\StaffStoreObject;
 use App\ViewModels\Staff\StaffListViewModel;
+use App\ViewModels\Staff\StaffShowViewModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StaffService implements \App\Contract\CrudServicesInterface
 {
     public function __construct(
-        private readonly StaffRepository   $staffRepository,
+        private readonly StaffRepository $staffRepository,
+        private readonly LogRepository   $logRepository,
     )
     {
     }
@@ -248,5 +258,38 @@ class StaffService implements \App\Contract\CrudServicesInterface
             return to_route("staffs.index")->with("success", "Xóa thành công");
         else
             return to_route("staffs.index")->with("success", "Xóa thất bại");
+    }
+
+    public function show($id)
+    {
+        /**
+         * @var Staff $staffCollection
+         * @var StaffLogsObject[] $logs
+         * @var Grade $grade
+         */
+        $logs = [];
+        $staffCollection = $this->staffRepository->show($id);
+        $grades = $staffCollection->Grades()->allRelatedIds()->toArray();
+        $logsCollection = $this->logRepository->getLogByGrades($grades);
+        $logs = $logsCollection->map(fn(Log $log) => new StaffLogsObject(
+            title: $log['lesson'],
+            id: $log["id"],
+            date: Carbon::parse($log['date'])->isoFormat("D/M/Y"),
+            teacher: new UserRelationObject(id: $log->teacher->id, name: $log->teacher->name, avatar: $log->teacher->avatar ?? config("app.blank_avatar")),
+            attachments: json_decode($log["attachments"]),
+            question: $log["question"] ?? "Không có BTVN",
+        ))->toArray();
+        return new StaffShowViewModel(
+            staff: new StaffShowObject(
+                id: $staffCollection["id"],
+                code: $staffCollection["code"],
+                name: $staffCollection["name"],
+                job: $staffCollection["job"],
+                phone: $staffCollection["phone"] ?? "-",
+                email: $staffCollection["email"],
+                extra: json_decode($staffCollection["extra"]),
+                avatar: $staffCollection["avatar"] ?? config("app.blank_avatar")
+            ), logs: $logs, calendarObject: null
+        );
     }
 }

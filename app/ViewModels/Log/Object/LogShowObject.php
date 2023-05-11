@@ -2,18 +2,20 @@
 
 namespace App\ViewModels\Log\Object;
 
+use App\Models\Teacher;
+
 class LogShowObject
 {
     public function __construct(
-        private readonly string           $id,
-        private readonly string           $embed,
-        private readonly string           $date,
-        private readonly string           $time,
-        private readonly string           $title,
-        private readonly LogGradeObject   $grade,
-        private readonly TeacherLogObject $teacher,
-        private readonly ?array           $students,
-        private readonly ?string           $assessment,
+        private readonly string         $id,
+        private readonly string         $embed,
+        private readonly string         $date,
+        private readonly string         $time,
+        private readonly string         $title,
+        private readonly LogGradeObject $grade,
+        private readonly ?Teacher        $teacher,
+        private readonly ?array         $students,
+        private readonly ?string        $assessment,
     )
     {
     }
@@ -67,11 +69,14 @@ class LogShowObject
     }
 
     /**
-     * @return TeacherLogObject
+     * @return TeacherLogObject|null
      */
-    public function getTeacher(): TeacherLogObject
+    public function getTeacher(): ?TeacherLogObject
     {
-        return $this->teacher;
+        if (!$this->teacher) {
+            return null;
+        }
+        return new TeacherLogObject($this->teacher->id, $this->teacher->name);
     }
 
     /**

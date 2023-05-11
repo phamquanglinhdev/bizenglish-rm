@@ -90,4 +90,11 @@ class LogRepository extends CrudRepository
             $grade->where("id", $gradeId);
         })->orderBy("created_at", "DESC")->get();
     }
+
+    public function getLogByGrades(array $grades): Collection|array
+    {
+        return $this->getQuery()->whereHas("grade", function (Builder $grade) use ($grades) {
+            $grade->whereIn("id", $grades);
+        })->orderBy("updated_at", "DESC")->limit(50)->get();
+    }
 }

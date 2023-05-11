@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Scopes\StaffScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
@@ -23,5 +24,10 @@ class Staff extends User
     public function Students(): HasMany
     {
         return $this->hasMany(Student::class, "staff_id", "id");
+    }
+
+    public function Grades(): BelongsToMany
+    {
+        return $this->belongsToMany(Grade::class, "staff_grade", "staff_id", "grade_id");
     }
 }
