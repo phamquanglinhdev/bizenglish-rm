@@ -161,13 +161,23 @@ class LogService implements \App\Contract\CrudServicesInterface
             'type' => 'select2',
             'options' => $this->gradeRepository->getForSelect()
         ]);
-        $entry->addField([
-            'name' => 'teacher_id',
-            'label' => 'Giáo viên',
-            'value' => $old["teacher_id"] ?? null,
-            'type' => 'select2',
-            'options' => $this->teacherRepository->getForSelect()
-        ]);
+        if (principal()->getType() < 1) {
+            $entry->addField([
+                'name' => 'teacher_id',
+                'label' => 'Giáo viên',
+                'value' => $old["teacher_id"] ?? null,
+                'type' => 'select2',
+                'options' => $this->teacherRepository->getForSelect()
+            ]);
+        } else {
+            $entry->addField([
+                'name' => 'teacher_id',
+                'label' => 'Giáo viên',
+                'value' => $old["teacher_id"] ?? null,
+                'type' => 'select2',
+                'options' => [principal()->getId()=>principal()->getName()],
+            ]);
+        }
         $entry->addField([
             'name' => 'date',
             'label' => 'Ngày',
@@ -296,9 +306,6 @@ class LogService implements \App\Contract\CrudServicesInterface
     function setupEditOperation($id): CrudEntry
     {
         $old = $this->logRepository->show($id);
-        if (!isset($old->id)) {
-            return abort("404");
-        }
         return $this->setupCreateOperation($old);
     }
 
