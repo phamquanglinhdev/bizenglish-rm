@@ -86,7 +86,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                @if(principal()->hasAdvanceModify()||principal()->id==$teacherObject->getId())
+                                @if(principal()->hasAdvanceModify()||principal()->getId()==$teacherObject->getId())
                                     <a href="{{url("/teachers/".$teacherObject->getId()."/edit")}}"
                                        class="btn btn-primary text-nowrap">
                                         <i class='bx bx-pencil me-1'></i>Sửa thông tin
