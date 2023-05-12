@@ -16,7 +16,7 @@ class Principal
     public function __construct(
         private readonly int    $id,
         private readonly string $name,
-        private readonly string $type,
+        private readonly int $type,
         private readonly string $email,
         private readonly bool   $auth,
     )
@@ -48,9 +48,9 @@ class Principal
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getType(): string
+    public function getType(): int
     {
         return $this->type;
     }
@@ -66,13 +66,13 @@ class Principal
     public function getRoleName(): string
     {
         return match ($this->type) {
-            "-1" => "Quản trị viên",
-            "0" => "Nhân viên",
-            "1" => "Giáo viên",
-            "2" => "Đối tác",
-            "3" => "Học sinh",
-            "4" => "Khách hàng",
-            "5" => "Đối tác cung cấp",
+            -1 => "Quản trị viên",
+            0 => "Nhân viên",
+            1 => "Giáo viên",
+            2 => "Đối tác",
+            3 => "Học sinh",
+            4 => "Khách hàng",
+            5 => "Đối tác cung cấp",
             default => "Không xác định",
         };
     }

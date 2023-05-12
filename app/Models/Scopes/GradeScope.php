@@ -33,7 +33,7 @@ class GradeScope implements Scope
             });
         }
         if (principal()->getType() == 3) {
-            $builder->whereHas("clients", function (Builder $teachers) {
+            $builder->whereHas("students", function (Builder $teachers) {
                 $teachers->where("id", principal()->getId());
             });
         }

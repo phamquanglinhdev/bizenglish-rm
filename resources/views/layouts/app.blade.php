@@ -69,6 +69,7 @@
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                         @yield("top_left_navigation")
                         <div>{{principal()->getName()}}
+
                             <span class="badge bg-label-primary">
                                 {{principal()->getRoleName()}}
                             </span>
