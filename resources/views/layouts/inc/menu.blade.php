@@ -61,13 +61,32 @@
             </a>
         </li>
 
-        <!-- Apps & Pages -->
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Quản lý lớp học</span></li>
         <li class="menu-item">
-            <a href="{{url("/grades")}}" class="menu-link">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-chalkboard"></i>
-                <div data-i18n="Email">Lớp học</div>
+                <div data-i18n="grades">Lớp học</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{url("/grades")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-chalkboard"></i>
+                        <div data-i18n="Email">Lớp đang học</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{url("/grades")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bxs-hourglass-bottom"></i>
+                        <div data-i18n="Email">Lớp đã kết thúc</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{url("/grades")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-data"></i>
+                        <div data-i18n="Email">Lớp đang bảo lưu</div>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="menu-item">
@@ -76,99 +95,54 @@
                 <div data-i18n="Email">Nhật ký</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="{{url("/grades")}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bxs-hourglass-bottom"></i>
-                <div data-i18n="Email">Lớp đã kết thúc</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{url("/grades")}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-data"></i>
-                <div data-i18n="Email">Lớp đang bảo lưu</div>
-            </a>
-        </li>
-        <!-- Components -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Người dùng</span></li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="grades">Người dùng</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{url("/staffs")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-user-pin"></i>
-                        <div data-i18n="Email">Nhân viên</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/teachers")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bxs-user-badge"></i>
-                        <div data-i18n="Email">Giáo viên</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/students")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-child"></i>
-                        <div data-i18n="Email">Học sinh</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/clients")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-building"></i>
-                        <div data-i18n="Email">Đối tác</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/customers")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bxs-user-detail"></i>
-                        <div data-i18n="Email">Khách hàng</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/partners")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bxs-briefcase-alt-2"></i>
-                        <div data-i18n="Email">Partnership</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        <!-- Cards -->
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Cards">Cards</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="cards-basic.html" class="menu-link">
-                        <div data-i18n="Basic">Basic</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="cards-advance.html" class="menu-link">
-                        <div data-i18n="Advance">Advance</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="cards-statistics.html" class="menu-link">
-                        <div data-i18n="Statistics">Statistics</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="cards-analytics.html" class="menu-link">
-                        <div data-i18n="Analytics">Analytics</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="cards-actions.html" class="menu-link">
-                        <div data-i18n="Actions">Actions</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @if(principal()->hasAdvanceModify())
+            <!-- Components -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Người dùng</span></li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="grades">Người dùng</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{url("/staffs")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                            <div data-i18n="Email">Nhân viên</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/teachers")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-user-badge"></i>
+                            <div data-i18n="Email">Giáo viên</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/students")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-child"></i>
+                            <div data-i18n="Email">Học sinh</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/clients")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-building"></i>
+                            <div data-i18n="Email">Đối tác</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/customers")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-user-detail"></i>
+                            <div data-i18n="Email">Khách hàng</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/partners")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-briefcase-alt-2"></i>
+                            <div data-i18n="Email">Partnership</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
     </ul>
 
 </aside>

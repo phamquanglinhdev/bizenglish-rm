@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use PHPUnit\Exception;
 
-class CrudRepository
+abstract class CrudRepository
 {
     public mixed $model;
 

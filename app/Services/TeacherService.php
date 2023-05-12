@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Contract\CrudServicesInterface;
+use App\Models\Log;
 use App\Models\Teacher;
 use App\Repositories\GradeRepository;
+use App\Repositories\LogRepository;
 use App\Repositories\PartnerRepository;
 use App\Repositories\TeacherRepository;
 use App\Untils\DataBroTable;
@@ -13,9 +15,11 @@ use App\ViewModels\Entry\CrudEntry;
 use App\ViewModels\Teacher\Object\TeacherListObject;
 use App\ViewModels\Teacher\Object\TeacherStoreObject;
 use App\ViewModels\Teacher\TeacherListViewModel;
+use App\ViewModels\Teacher\TeacherShowViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -24,7 +28,7 @@ class TeacherService implements CrudServicesInterface
 {
     public function __construct(
         private readonly TeacherRepository $teacherRepository,
-        private readonly GradeRepository   $gradeRepository,
+        private readonly LogRepository     $logRepository,
         private readonly PartnerRepository $partnerRepository,
         private readonly SkillRepository   $skillRepository,
     )
@@ -341,13 +345,29 @@ class TeacherService implements CrudServicesInterface
         return to_route("teachers.index")->with("success", "Cập nhật thành công");
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         if ($this->teacherRepository->update(["disable" => 1], $id)) {
             return to_route("teachers.index")->with("success", "Xóa thành công");
-        }else{
+        } else {
             return to_route("teachers.index")->with("success", "Xóa thất bại");
         }
     }
 
+    public function showTeacherProfile($id): TeacherShowViewModel|RedirectResponse
+    {
+        /**
+         * @var Teacher $teacherModel
+         * @var Log[] $logs
+         */
+        $teacherModel = $this->teacherRepository->show($id);
+        $grades = $teacherModel->Grades()->get();
+        $logs = $teacherModel->Logs()->orderBy("updated_at", "DESC")->get();
+        return new TeacherShowViewModel(
+            teacher: $teacherModel,
+            logs: $logs,
+            grades: $grades,
+            calendars: $teacherModel->getOwnTime()
+        );
+    }
 }

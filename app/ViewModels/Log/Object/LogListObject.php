@@ -31,6 +31,15 @@ class LogListObject
     {
     }
 
+    /**
+     * @return string
+     */
+    public function getGrade(): string
+    {
+        return $this->grade;
+    }
+
+
     public function toArray(): array
     {
         return [
@@ -199,11 +208,5 @@ class LogListObject
     public function getConfirm(): string
     {
         return $this->confirm;
-    }
-
-
-    private function getGrade(): string
-    {
-        return $this->grade;
     }
 }

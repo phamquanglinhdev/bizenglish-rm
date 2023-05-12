@@ -16,7 +16,7 @@ class Principal
     public function __construct(
         private readonly int    $id,
         private readonly string $name,
-        private readonly int $type,
+        private readonly int    $type,
         private readonly string $email,
         private readonly bool   $auth,
     )
@@ -75,5 +75,10 @@ class Principal
             5 => "Đối tác cung cấp",
             default => "Không xác định",
         };
+    }
+
+    public function hasAdvanceModify(): bool
+    {
+        return $this->type <= 0;
     }
 }

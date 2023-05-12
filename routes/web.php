@@ -25,15 +25,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth')->prefix("/")->group(function () {
-    Route::get("/", [DashboardController::class,"index"])->name("index");
+    Route::get("/", [DashboardController::class, "index"])->name("index");
     Route::resource("grades", GradeCrudController::class);
     Route::resource("logs", LogCrudController::class);
-    Route::resource("staffs", StaffCrudController::class);
-    Route::resource("students", StudentCrudController::class);
-    Route::resource("teachers", TeacherCrudController::class);
-    Route::resource("clients", ClientCrudController::class);
-    Route::resource("customers", CustomerCrudController::class);
-    Route::resource("partners", PartnerCrudController::class);
+    Route::resource("staffs", StaffCrudController::class)->middleware(["advance"]);
+    Route::resource("students", StudentCrudController::class);//custom advance
+    Route::resource("teachers", TeacherCrudController::class)->middleware(["advance"]);
+    Route::resource("clients", ClientCrudController::class);//custom advance
+    Route::resource("customers", CustomerCrudController::class)->middleware(["advance"]);
+    Route::resource("partners", PartnerCrudController::class)->middleware("advance");
 });
 Route::get("/login", [AuthController::class, "login"])->name("login");
 Route::post("/login", [AuthController::class, "authenticate"])->name("authenticate");

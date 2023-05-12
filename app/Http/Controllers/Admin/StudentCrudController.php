@@ -19,6 +19,7 @@ class StudentCrudController extends Controller
     public function __construct(StudentService $studentService)
     {
         $this->studentService = $studentService;
+        $this->middleware("advance")->except("show");
     }
 
     /**
@@ -58,7 +59,7 @@ class StudentCrudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id):View
+    public function show(string $id): View
     {
         return \view("admin.screens.student_detail", [
             'studentShowViewModel' => $this->studentService->showStudentProfile($id)

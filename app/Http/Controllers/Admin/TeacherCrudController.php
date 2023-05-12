@@ -53,9 +53,11 @@ class TeacherCrudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View|RedirectResponse
     {
-        //
+        return \view("admin.screens.teacher_detail", [
+            'teacherShowViewModel' => $this->teacherService->showTeacherProfile($id)
+        ]);
     }
 
     /**

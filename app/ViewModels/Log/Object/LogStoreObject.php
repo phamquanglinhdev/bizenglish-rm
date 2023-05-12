@@ -12,6 +12,7 @@ class LogStoreObject
         private readonly string  $date,
         private readonly string  $start,
         private readonly string  $end,
+        private readonly ?int    $number_of_student,
         private readonly int     $duration,
         private readonly int     $hour_salary,
         private readonly int     $log_salary,
@@ -27,6 +28,14 @@ class LogStoreObject
     {
     }
 
+    /**
+     * @return int|null
+     */
+    public function getNumberOfStudent(): ?int
+    {
+        return $this->number_of_student;
+    }
+
     public function toArray(): array
     {
         return [
@@ -35,16 +44,17 @@ class LogStoreObject
             'date' => Carbon::parse($this->getDate()),
             'start' => $this->getStart(),
             'end' => $this->getEnd(),
-            'duration'=>$this->getDuration(),
-            'hour_salary'=>$this->getHourSalary(),
-            'log_salary'=>$this->getLogSalary(),
-            'lesson'=>$this->getLesson(),
-            'teacher_video'=>$this->getTeacherVideo(),
-            'drive'=>$this->getDrive(),
-            'information'=>$this->getInformation()??"Không có",
-            'status'=>$this->getStatus(),
-            'assessment'=>$this->getAssessment(),
-            'attachments'=>$this->getAttachments(),
+            'duration' => $this->getDuration(),
+            'hour_salary' => $this->getHourSalary(),
+            'log_salary' => $this->getLogSalary(),
+            'lesson' => $this->getLesson(),
+            'teacher_video' => $this->getTeacherVideo(),
+            'drive' => $this->getDrive(),
+            'information' => $this->getInformation() ?? "Không có",
+            'status' => $this->getStatus(),
+            'number_of_student' => $this->getNumberOfStudent(),
+            'assessment' => $this->getAssessment(),
+            'attachments' => $this->getAttachments(),
         ];
     }
 

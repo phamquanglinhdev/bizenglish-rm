@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Models\Scopes\TeacherScope;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $files
@@ -37,5 +39,18 @@ class Teacher extends User
     public function Grades(): BelongsToMany
     {
         return $this->belongsToMany(Grade::class, "teacher_grade", "teacher_id", "grade_id");
+    }
+
+    public function Logs(): HasMany
+    {
+        return $this->hasMany(Log::class, "teacher_id", "id");
+    }
+
+    public function getOwnTime(): Collection
+    {
+        return $this->Grades()->where("disable", 0)
+            ->where("status", 0)
+            ->where("time", "!=", null)
+            ->get();
     }
 }

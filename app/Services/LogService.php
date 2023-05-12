@@ -181,23 +181,30 @@ class LogService implements \App\Contract\CrudServicesInterface
         $entry->addField([
             'name' => 'date',
             'label' => 'Ngày',
-            'class' => 'col-md-4',
+            'class' => 'col-md-6',
             'value' => $old["date"] ?? null,
             'type' => 'date',
         ]);
         $entry->addField([
             'name' => 'start',
             'label' => 'Bắt đầu',
-            'class' => 'col-md-4',
+            'class' => 'col-md-6',
             'value' => $old["start"] ?? null,
             'type' => 'time',
         ]);
         $entry->addField([
             'name' => 'end',
             'label' => 'Kết thúc',
-            'class' => 'col-md-4',
+            'class' => 'col-md-6',
             'value' => $old["end"] ?? null,
             'type' => 'time',
+        ]);
+        $entry->addField([
+            'name' => 'number_of_student',
+            'label' => 'Số lượng học sinh',
+            'class' => 'col-md-6',
+            'value' => $old["number_of_student"] ?? null,
+            'type' => 'numbers',
         ]);
         $entry->addField([
             'name' => 'duration',
@@ -403,6 +410,7 @@ class LogService implements \App\Contract\CrudServicesInterface
                 date: $attributes['date'],
                 start: $attributes['start'],
                 end: $attributes['end'],
+                number_of_student: $attributes["number_of_student"],
                 duration: $attributes['duration'],
                 hour_salary: $attributes['hour_salary'],
                 log_salary: ($attributes['duration'] / 60) * $attributes['hour_salary'],
@@ -454,6 +462,7 @@ class LogService implements \App\Contract\CrudServicesInterface
             date: $attributes['date'],
             start: $attributes['start'],
             end: $attributes['end'],
+            number_of_student: $attributes["number_of_student"],
             duration: $attributes['duration'],
             hour_salary: $attributes['hour_salary'],
             log_salary: ($attributes['duration'] / 60) * $attributes['hour_salary'],

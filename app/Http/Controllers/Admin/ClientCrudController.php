@@ -18,6 +18,7 @@ class ClientCrudController extends Controller
         private readonly ClientService $clientService
     )
     {
+        $this->middleware("advance")->except('show');
     }
 
     public function index(Request $request): View|JsonResponse
