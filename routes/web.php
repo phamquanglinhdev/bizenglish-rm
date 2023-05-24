@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CustomerCrudController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GradeCrudController;
 use App\Http\Controllers\Admin\LogCrudController;
+use App\Http\Controllers\Admin\MenuCrudController;
 use App\Http\Controllers\Admin\PartnerCrudController;
 use App\Http\Controllers\Admin\StaffCrudController;
 use App\Http\Controllers\Admin\StudentCrudController;
@@ -28,6 +29,7 @@ Route::middleware('auth')->prefix("/")->group(function () {
     Route::get("/", [DashboardController::class, "index"])->name("index");
     Route::resource("grades", GradeCrudController::class);
     Route::resource("logs", LogCrudController::class);
+    Route::resource("menus", MenuCrudController::class);
     Route::resource("staffs", StaffCrudController::class)->middleware(["advance"]);
     Route::resource("students", StudentCrudController::class);//custom advance
     Route::resource("teachers", TeacherCrudController::class)->middleware(["advance"]);

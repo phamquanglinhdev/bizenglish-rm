@@ -14,54 +14,56 @@ use Illuminate\Support\Facades\Auth;
 class Principal
 {
     public function __construct(
-        private readonly int    $id,
-        private readonly string $name,
-        private readonly int    $type,
-        private readonly string $email,
-        private readonly bool   $auth,
+        private readonly ?int    $id,
+        private readonly ?string $name,
+        private readonly ?int    $type,
+        private readonly ?string $email,
+        private readonly ?bool   $auth,
     )
     {
     }
 
     /**
-     * @return bool
+     * @return int|null
      */
-    public function isAuth(): bool
-    {
-        return $this->auth;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getType(): int
+    public function getType(): ?int
     {
         return $this->type;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
+
+    /**
+     * @return bool|null
+     */
+    public function getAuth(): ?bool
+    {
+        return $this->auth;
+    }
+
+
 
     public function getRoleName(): string
     {

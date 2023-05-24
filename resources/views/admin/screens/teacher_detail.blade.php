@@ -341,7 +341,8 @@
                                         <div>Bài tập : {{$log->getQuestion()}}</div>
                                         @foreach($log->getAttachments() as $attachment)
                                             <div class="d-flex flex-wrap gap-2">
-                                                <a href="{{url("/uploads/".$attachment)}}" class="me-3">
+                                                <a href="{{url("/uploads/".str_replace("/uploads/","",$attachment))}}"
+                                                   class="me-3">
                                                     <img src="{{asset("img/icons/misc/pdf.png")}}"
                                                          width="20" class="me-2">
                                                     <span class="h6">{{$attachment}}</span>

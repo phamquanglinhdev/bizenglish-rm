@@ -48,6 +48,21 @@ abstract class CrudRepository
 
     }
 
+    public function indexNoDisable($attributes): Collection|array
+    {
+        $crud = $this->filter($this->getQuery(), $attributes);
+        $crud = $this->filter($crud, $attributes);
+        if (isset($attributes['length'])) {
+            if ($attributes['length'] != -1) {
+                if (isset($attributes['start'])) {
+                    $crud->skip($attributes['start']);
+                    $crud->take($attributes['length']);
+                }
+            }
+        }
+        return $crud->orderBy("created_at", "DESC")->get();
+    }
+
     public function show($id): Model|Builder
     {
         return $this->getQuery()->where("id", $id)->firstOrFail();
@@ -73,11 +88,12 @@ abstract class CrudRepository
         return $this->getQuery()->where("id", $id)->delete();
     }
 
-    public function getForSelect(): array
+    public function getForSelect($trash = true): array
     {
-        try {
+        if($trash){
             return $this->getQuery()->where("disable", 0)->get()->pluck("name", "id")->toArray();
-        } catch (\Exception $exception) {
+        }
+        else {
             return $this->getQuery()->get()->pluck("name", "id")->toArray();
         }
     }
@@ -97,6 +113,12 @@ abstract class CrudRepository
         } catch (\Exception $exception) {
             return $crud->count();
         }
+    }
+
+    public function countNoDisable($attributes): int
+    {
+        $crud = $this->filter($this->getQuery(), $attributes);
+        return $crud->count();
     }
 
 }

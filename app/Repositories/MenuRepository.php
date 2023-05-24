@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Menu;
+use Illuminate\Database\Eloquent\Collection;
 
 class MenuRepository extends CrudRepository
 {

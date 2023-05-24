@@ -143,6 +143,26 @@
                 </ul>
             </li>
         @endif
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-book"></i>
+                <div data-i18n="grades">Quản lý sách</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{url("/menus")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-list-plus"></i>
+                        <div data-i18n="Email">Menu sách</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{url("/books")}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-book"></i>
+                        <div data-i18n="Email">Sách</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 
 </aside>
