@@ -98,7 +98,7 @@ class GradeCrudController extends Controller
         if ($this->gradeService->delete($id)) {
             return to_route("grades.index")->with("success", "Xóa thành công");
         } else {
-            return to_route("grade.index")->with("error", "Xóa thất bại");
+            return to_route("grades.index")->with("error", "Xóa thất bại");
         }
     }
 
