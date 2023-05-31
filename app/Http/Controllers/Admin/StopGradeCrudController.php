@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Export\LogExport;
-use App\Http\Controllers\Admin\GradeCrudController;
+use App\Http\Controllers\Controller;
 use App\Services\GradeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
-use Nette\Utils\Json;
 
 class StopGradeCrudController extends Controller
 {

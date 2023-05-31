@@ -9,10 +9,10 @@ use App\Http\Controllers\Admin\LogCrudController;
 use App\Http\Controllers\Admin\MenuCrudController;
 use App\Http\Controllers\Admin\PartnerCrudController;
 use App\Http\Controllers\Admin\StaffCrudController;
+use App\Http\Controllers\Admin\StopGradeCrudController;
 use App\Http\Controllers\Admin\StudentCrudController;
 use App\Http\Controllers\Admin\TeacherCrudController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StopGradeCrudController;
 use Illuminate\Support\Facades\Route;
 
 /*
