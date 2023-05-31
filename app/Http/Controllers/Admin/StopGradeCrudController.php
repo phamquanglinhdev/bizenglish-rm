@@ -99,7 +99,7 @@ class StopGradeCrudController extends Controller
     public
     function export(Request $request)
     {
-        $name = "lop-hoc-da-ket-thuc" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
+        $name = "lop-hoc-da-ket-thuc-" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
         $attributes = $request->except("_cols");
         $attributes["status"] = 1;
         $data = $this->gradeService->export($attributes);

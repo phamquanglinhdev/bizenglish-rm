@@ -104,7 +104,7 @@ class GradeCrudController extends Controller
 
     public function export(Request $request): string
     {
-        $name = "lop-hoc" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
+        $name = "lop-hoc-" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
         $attributes = $request->except("_cols");
         $data = $this->gradeService->export($attributes);
         Excel::store(new LogExport($data), $name, "excel", null);
