@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -105,7 +106,7 @@ class LogCrudController extends Controller
 
     public function export(Request $request): string
     {
-        $name = "nhat-ky-" . Carbon::now()->isoFormat("D-M-Y") . ".xlsx";
+        $name = "nhat-ky-" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
         $attributes = $request->except("_cols");
         $data = $this->logService->exportLogs($attributes);
         Excel::store(new LogExport($data), $name, "excel", null);

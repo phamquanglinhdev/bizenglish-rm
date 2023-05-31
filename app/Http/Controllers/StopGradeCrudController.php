@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Nette\Utils\Json;
@@ -99,7 +100,7 @@ class StopGradeCrudController extends Controller
     public
     function export(Request $request)
     {
-        $name = "lop-hoc-da-ket-thuc" . Carbon::now()->isoFormat("D-M-Y") . ".xlsx";
+        $name = "lop-hoc-da-ket-thuc" . Carbon::now()->isoFormat("D-M-Y") . "-" . Str::random(5) . ".xlsx";
         $attributes = $request->except("_cols");
         $attributes["status"] = 1;
         $data = $this->gradeService->export($attributes);
