@@ -101,7 +101,7 @@ class GradeCrudController extends Controller
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request): string
     {
         $name = "lop-hoc" . Carbon::now()->isoFormat("D-M-Y") . ".xlsx";
         $attributes = $request->except("_cols");
