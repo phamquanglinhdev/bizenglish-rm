@@ -32,7 +32,7 @@ Route::middleware('auth')->prefix("/")->group(function () {
     Route::resource("grades", GradeCrudController::class);
     Route::resource("stop-grades", StopGradeCrudController::class);
     Route::resource("logs", LogCrudController::class);
-    Route::resource("menus", MenuCrudController::class);
+    Route::resource("menus", MenuCrudController::class)->middleware(["advance"]);
     Route::resource("staffs", StaffCrudController::class)->middleware(["advance"]);
     Route::resource("students", StudentCrudController::class);//custom advance
     Route::resource("teachers", TeacherCrudController::class)->middleware(["advance"]);

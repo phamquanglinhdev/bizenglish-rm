@@ -60,29 +60,29 @@
                 <div data-i18n="">Bảng điều khiển</div>
             </a>
         </li>
-
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Quản lý lớp học</span></li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-chalkboard"></i>
-                <div data-i18n="grades">Lớp học</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{url("/grades")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-chalkboard"></i>
-                        <div data-i18n="Email">Lớp học</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/stop-grades")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bxs-hourglass-bottom"></i>
-                        <div data-i18n="Email">Lớp đã kết thúc</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
+        @if(principal()->hasAdvanceModify())
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Quản lý lớp học</span></li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-chalkboard"></i>
+                    <div data-i18n="grades">Lớp học</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{url("/grades")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-chalkboard"></i>
+                            <div data-i18n="Email">Lớp học</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/stop-grades")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-hourglass-bottom"></i>
+                            <div data-i18n="Email">Lớp đã kết thúc</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
         <li class="menu-item">
             <a href="{{url("/logs")}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-history"></i>
@@ -137,26 +137,28 @@
                 </ul>
             </li>
         @endif
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-book"></i>
-                <div data-i18n="grades">Quản lý sách</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{url("/menus")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-list-plus"></i>
-                        <div data-i18n="Email">Menu sách</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/books")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-book"></i>
-                        <div data-i18n="Email">Sách</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @if(principal()->hasAdvanceModify())
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-book"></i>
+                    <div data-i18n="grades">Quản lý sách</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{url("/menus")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-list-plus"></i>
+                            <div data-i18n="Email">Menu sách</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url("/books")}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-book"></i>
+                            <div data-i18n="Email">Sách</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
     </ul>
 
 </aside>
