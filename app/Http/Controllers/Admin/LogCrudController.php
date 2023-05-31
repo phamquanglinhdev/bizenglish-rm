@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Export\LogExport;
 use App\Http\Controllers\Controller;
 use App\Services\LogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LogCrudController extends Controller
 {
@@ -97,5 +101,14 @@ class LogCrudController extends Controller
         } else {
             return to_route("logs.index")->with("error", "Xóa thất bại");
         }
+    }
+
+    public function export(Request $request): string
+    {
+        $name = "nhat-ky-" . Carbon::now()->isoFormat("D-M-Y") . ".xlsx";
+        $attributes = $request->except("_cols");
+        $data = $this->logService->exportLogs($attributes);
+        Excel::store(new LogExport($data), $name, "excel", null);
+        return url("uploads/excel/" . $name);
     }
 }

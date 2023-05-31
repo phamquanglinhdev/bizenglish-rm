@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Export\LogExport;
 use App\Http\Controllers\Controller;
 use App\Services\GradeService;
 use Illuminate\Contracts\View\Factory;
@@ -10,6 +11,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GradeCrudController extends Controller
 {
@@ -36,7 +39,7 @@ class GradeCrudController extends Controller
             'label' => 'Lớp học',
             'columns' => $this->gradeService->setupListOperation(),
             'filters' => $this->gradeService->setupFilterOperation($request->input()),
-            'setup'=>$this->gradeService->setup()->getSetup(),
+            'setup' => $this->gradeService->setup()->getSetup(),
         ]);
     }
 
@@ -96,5 +99,14 @@ class GradeCrudController extends Controller
         } else {
             return to_route("grade.index")->with("error", "Xóa thất bại");
         }
+    }
+
+    public function export(Request $request)
+    {
+        $name = "lop-hoc" . Carbon::now()->isoFormat("D-M-Y") . ".xlsx";
+        $attributes = $request->except("_cols");
+        $data = $this->gradeService->export($attributes);
+        Excel::store(new LogExport($data), $name, "excel", null);
+        return url("uploads/excel/" . $name);
     }
 }

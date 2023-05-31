@@ -530,4 +530,55 @@ class LogService implements \App\Contract\CrudServicesInterface
         )->toArray()
         );
     }
+
+    public function getExcelTitle(): array
+    {
+        return [
+            'grade' => 'Lớp',
+            'date' => 'Ngày',
+            'start' => 'Bắt đầu',
+            'end' => 'Kết thúc',
+            'students' => 'Học sinh',
+            'teacher' => 'Giáo viên',
+            'clients' => 'Đối tác',
+            'partner' => 'Đối tác cung cấp',
+            'lesson' => 'Bài học',
+            'teacher_video' => 'Video',
+            'drive' => 'Video(Drive)',
+            'duration' => 'Thời lượng',
+            'hour_salary' => 'Lương theo giờ',
+            'log_salary' => 'Lương buổi học',
+            'status' => 'Tình trạng lớp học',
+            'assessment' => 'Nhận xét của giáo viên',
+            'attachments' => 'Đính kèm',
+        ];
+    }
+
+    public function exportLogs($attributes = [], $cols = []): array
+    {
+        $collection = $this->logRepository->index($attributes);
+        $exportData = $collection->map(function (Log $log) {
+            $data = [];
+            $data["grade"] = $log->grade->name;
+            $data["date"] = $log["date"];
+            $data["start"] = $log["start"];
+            $data["end"] = $log["end"];
+            $data["student"] = implode($log->Students());
+            $data["teacher"] = $log->Teacher()->first()->name ?? null;
+            $data["client"] = implode($log->Clients());
+            $data["partner"] = json_decode($log->Partner() ?? '{"name"=>"Không"}')->name ?? "Không";
+            $data["lesson"] = $log["lesson"];
+            $data["teacher_video"] = $log["teacher_video"];
+            $data["drive"] = $log["drive"];
+            $data["duration"] = $log["duration"];
+            $data["hour_salary"] = $log["hour_salary"];
+            $data["log_salary"] = $log["log_salary"];
+            $data["status"] = $log->StatusShow();
+            $data["assessment"] = $log["assessment"];
+            $data["attachments"] = $log["attachments"];
+            return $data;
+        })->toArray();
+
+        return array($this->getExcelTitle(),$exportData);
+    }
 }

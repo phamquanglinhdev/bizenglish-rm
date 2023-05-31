@@ -35,6 +35,7 @@ class GradeService implements CrudServicesInterface
      * @param StudentRepository $studentRepository
      * @param ClientRepository $clientRepository
      * @param SupporterRepository $supporterRepository
+     * @param MenuRepository $menuRepository
      */
     public function __construct(
         private readonly GradeRepository     $gradeRepository,
@@ -51,7 +52,6 @@ class GradeService implements CrudServicesInterface
     public function setup(): SetupEntry
     {
         $entry = new SetupEntry();
-        $entry->addConfig("denyCreate", true);
         return $entry;
     }
 
@@ -301,7 +301,7 @@ class GradeService implements CrudServicesInterface
             'label' => 'Bộ sách được sử dụng',
             'color' => 'warning',
             'value' => $old?->Menus()->allRelatedIds()->toArray(),
-            'options' => $this->menuRepository->getForSelect()
+            'options' => $this->menuRepository->getForSelect(false)
         ]);
         return $entry;
     }
@@ -478,5 +478,29 @@ class GradeService implements CrudServicesInterface
                 drive: $log['drive'],
             ))
         ));
+    }
+
+    public function export($attributes, $cols = [])
+    {
+        $title = $this->setupListOperation();
+        $collection = $this->gradeRepository->index($attributes);
+        $exportData = $collection->map(function (Grade $grade) {
+            return [
+                'name' => $grade["name"],
+                'students' => implode($grade->Students()->get()->pluck('name', "id")->toArray()),
+                'teachers' => implode($grade->Teachers()->get()->pluck('name', "id")->toArray()),
+                'staffs' => implode($grade->Staffs()->get()->pluck('name', "id")->toArray()),
+                'supporters' => implode($grade->Supporters()->get()->pluck('name', "id")->toArray()),
+                'clients' => implode($grade->Clients()->get()->pluck('name', "id")->toArray()),
+                'link' => $grade["zoom"],
+                'pricing' => $grade["pricing"],
+                'minutes' => $grade["minutes"],
+                'remaining' => $grade["remaining"],
+                'attachment' => $grade["attachment"],
+                'status' => $grade->getStatus(),
+                'created_at' => $grade["created_at"],
+            ];
+        })->toArray();
+        return array($title, $exportData);
     }
 }

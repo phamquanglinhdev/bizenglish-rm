@@ -20,6 +20,11 @@ class Grade extends Model
         static::addGlobalScope(new GradeScope);
     }
 
+    public static function subBoot(): void
+    {
+        parent::boot();
+    }
+
     use HasFactory;
 
     /**

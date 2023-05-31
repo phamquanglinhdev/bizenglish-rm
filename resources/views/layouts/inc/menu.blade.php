@@ -71,19 +71,13 @@
                 <li class="menu-item">
                     <a href="{{url("/grades")}}" class="menu-link">
                         <i class="menu-icon tf-icons bx bx-chalkboard"></i>
-                        <div data-i18n="Email">Lớp đang học</div>
+                        <div data-i18n="Email">Lớp học</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{url("/grades")}}" class="menu-link">
+                    <a href="{{url("/stop-grades")}}" class="menu-link">
                         <i class="menu-icon tf-icons bx bxs-hourglass-bottom"></i>
                         <div data-i18n="Email">Lớp đã kết thúc</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{url("/grades")}}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-data"></i>
-                        <div data-i18n="Email">Lớp đang bảo lưu</div>
                     </a>
                 </li>
             </ul>

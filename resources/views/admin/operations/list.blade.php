@@ -77,11 +77,17 @@
                     <i class='bx bxs-plus-circle'></i>
                 </a>
             @endif
+
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filter"
                     aria-controls="filter"><i class='bx bx-filter'></i>
             </button>
             <a class="btn btn-primary" href="{{$currentRoute}}"><i class='bx bx-reset'></i>
             </a>
+            @if(!isset($export))
+                <button class="btn btn-primary text-uppercase" id="excel-export-button">
+                    <i class='bx bxs-download pe-1'></i> Excel
+                </button>
+            @endif
         </div>
         <div class="card-datatable text-nowrap">
             <table class="datatables-ajax table table-bordered">
@@ -162,5 +168,34 @@
             });
         })
     </script>
-
+    <script>
+        $("#excel-export-button").click(function (e) {
+            const readyState = $(this).html()
+            $(this).html("Loading...")
+            $(this).addClass("disabled")
+            const button = $(this)
+            let data = {!! json_encode($request) !!};
+            $.ajax({
+                type: "GET",
+                url: '{{$currentRoute}}/export/excel',
+                data: data,
+                success: function (data) {
+                    button.html(readyState)
+                    button.removeClass("disabled")
+                    window.location.href = data
+                },
+                error: function () {
+                    button.html(readyState)
+                    button.removeClass("disabled")
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Đã xảy ra lỗi',
+                        showConfirmButton: !1,
+                        timer: 1500,
+                        buttonsStyling: !1
+                    })
+                }
+            })
+        })
+    </script>
 @endpush
