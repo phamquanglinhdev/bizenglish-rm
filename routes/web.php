@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\ClientCrudController;
 use App\Http\Controllers\Admin\CustomerCrudController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DemoCrudController;
 use App\Http\Controllers\Admin\GradeCrudController;
 use App\Http\Controllers\Admin\LogCrudController;
 use App\Http\Controllers\Admin\MenuCrudController;
@@ -40,6 +41,7 @@ Route::middleware('auth')->prefix("/")->group(function () {
     Route::resource("customers", CustomerCrudController::class)->middleware(["advance"]);
     Route::resource("partners", PartnerCrudController::class)->middleware("advance");
     Route::resource("books", BookController::class)->middleware("advance");
+    Route::resource("demos", DemoCrudController::class)->middleware("advance");
     Route::get("/logs/export/excel", [LogCrudController::class, "export"])->name("logs.export");
     Route::get("/grades/export/excel", [GradeCrudController::class, "export"])->name("logs.export");
     Route::get("/stop-grades/export/excel", [StopGradeCrudController::class, "export"])->name("logs.export");

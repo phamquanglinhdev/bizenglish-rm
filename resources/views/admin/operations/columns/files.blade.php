@@ -6,6 +6,9 @@
 @foreach($attachments as $attachment)
     @php
         $extend = explode(".",$attachment)[1]??null;
+        if($extend=="xlsx"){
+            $extend="blank";
+        }
     @endphp
     <button
         type="button"
@@ -16,6 +19,6 @@
         data-bs-html="true"
         data-bs-content="<p>{{$attachment}}</p> <div class='d-flex justify-content-between'><a href='{{$attachment}}' type='button' class='btn btn-sm btn-primary'>Download</button></div>"
         href="">
-        <i class='bx bxs-file-{{$extend??null}}'></i>
+        <i class='bx bxs-file-{{$extend??"blank"}}'></i>
     </button>
 @endforeach

@@ -80,6 +80,7 @@
                             <div data-i18n="Email">Lớp đã kết thúc</div>
                         </a>
                     </li>
+
                 </ul>
             </li>
         @endif
@@ -87,6 +88,12 @@
             <a href="{{url("/logs")}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-history"></i>
                 <div data-i18n="Email">Nhật ký</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{{url("/demos")}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-slideshow"></i>
+                <div data-i18n="Email">Lớp DEMO</div>
             </a>
         </li>
         @if(principal()->hasAdvanceModify())

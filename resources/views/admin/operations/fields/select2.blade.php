@@ -27,5 +27,30 @@
 </div>
 @push("page_js")
     <script src="{{asset("vendor/libs/select2/select2.js")}}"></script>
-    <script src="{{asset("js/forms-selects.js")}}"></script>
+    <script>
+        "use strict";
+        $(function () {
+            var e = $(".selectpicker"), t = $("#{{$field["name"]}}"), i = $(".select2-icons");
+
+            function l(e) {
+                return e.id ? "<i class='bx bxl-" + $(e.element).data("icon") + " me-2'></i>" + e.text : e.text
+            }
+
+            e.length && e.selectpicker(), t.length && t.each(function () {
+                var e = $(this);
+                e.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: "Select value",
+                    dropdownParent: e.parent(),
+                    disabled: {{isset($field["disable"])?"true":"false"}},
+                })
+            }), i.length && i.wrap('<div class="position-relative"></div>').select2({
+                templateResult: l,
+                templateSelection: l,
+                escapeMarkup: function (e) {
+                    return e
+                }
+            })
+        });
+
+    </script>
 @endpush
